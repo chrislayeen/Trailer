@@ -129,6 +129,20 @@ const Confirmation = () => {
                     </p>
                 </div>
 
+                {/* Session Remarks / Comments */}
+                {session.comments && (
+                    <div style={{ width: '100%', marginBottom: '2rem', textAlign: 'left' }}>
+                        <div style={{ padding: '1.25rem', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                            <h4 style={{ fontSize: '0.75rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.75rem' }}>
+                                SESSION REMARKS
+                            </h4>
+                            <p style={{ fontSize: '1rem', color: '#1e293b', lineHeight: '1.5', margin: 0 }}>
+                                "{session.comments}"
+                            </p>
+                        </div>
+                    </div>
+                )}
+
                 {/* Actions */}
                 <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <button

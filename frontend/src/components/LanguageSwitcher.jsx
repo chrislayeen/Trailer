@@ -18,17 +18,18 @@ const LanguageSwitcher = ({ variant = 'light' }) => {
             style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
-                background: isLight ? 'transparent' : 'rgba(0,0,0,0.3)',
-                border: isLight ? '1px solid var(--color-gray-300)' : '1px solid rgba(255,255,255,0.3)',
-                padding: '6px 12px',
-                borderRadius: '20px',
-                color: isLight ? 'var(--color-gray-700)' : 'white',
-                fontSize: '0.8rem',
-                fontWeight: 600,
+                gap: '8px',
+                background: isLight ? '#f3f4f6' : 'rgba(255,255,255,0.1)',
+                border: isLight ? '1px solid #e5e7eb' : '1px solid rgba(255,255,255,0.2)',
+                padding: '8px 16px',
+                borderRadius: '999px',
+                color: isLight ? '#374151' : 'white',
+                fontSize: '0.85rem',
+                fontWeight: 700,
                 cursor: 'pointer',
-                transition: 'all 0.2s',
-                backdropFilter: isLight ? 'none' : 'blur(4px)',
+                transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                backdropFilter: isLight ? 'none' : 'blur(8px)',
+                boxShadow: isLight ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
                 fontFamily: 'inherit'
             }}
             title={i18n.language === 'nl' ? "Switch to English" : "Wissel naar Nederlands"}
