@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Records from './pages/Records';
 import Settings from './pages/Settings';
+import Analytics from './pages/Analytics';
 
 const ProtectedRoute = ({ children }) => {
   const { admin, loading } = useAuth();
@@ -45,6 +46,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Settings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/analytics"
+            element={
+              <ProtectedRoute>
+                <Analytics />
               </ProtectedRoute>
             }
           />

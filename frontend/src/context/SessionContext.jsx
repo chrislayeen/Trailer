@@ -192,20 +192,34 @@ export const SessionProvider = ({ children }) => {
     if (!currentSession) return;
 
     try {
+      const payload = {
+        status: 'uploaded',
+        end_time: new Date().toISOString(),
+        comments: currentSession.comments,
+        gps_lat: currentSession.location_verified ? 0 : null, // Replace with real coords if available
+        gps_lng: currentSession.location_verified ? 0 : null
+      };
+
+      console.log('--- SESSION SUBMISSION AUDIT ---');
+      console.log('Target Table: sessions');
+      console.log('Insert Payload:', payload);
+
       const { data, error } = await supabase
         .from('sessions')
-        .update({
-          status: 'uploaded',
-          end_time: new Date().toISOString(),
-          comments: currentSession.comments,
-          gps_lat: currentSession.location_verified ? 0 : null, // Replace with real coords if available
-          gps_lng: currentSession.location_verified ? 0 : null
-        })
+        .update(payload)
         .eq('id', currentSession.id)
         .select('*, photos(*)') // Select updated session AND related photos
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase Update Error:', error);
+        console.log('RLS Check: If error is 403, check RLS policies.');
+        throw error;
+      }
+
+      console.log('Returned Data:', data);
+      console.log('Comment in Data:', data.comments);
+      console.log('--------------------------------');
 
       // Update sessions list locally to include the latest changes immediately
       setSessions(prev => [data, ...prev.filter(s => s.id !== data.id)]);

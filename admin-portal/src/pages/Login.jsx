@@ -1,15 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Lock, User, LogIn, Bot } from 'lucide-react';
 import { toast } from 'sonner';
+import { supabase } from '../utils/supabase';
 
 const Login = () => {
     const [name, setName] = useState('');
     const [pin, setPin] = useState('');
     const [loading, setLoading] = useState(false);
+    const [dbStatus, setDbStatus] = useState('checking');
     const { login } = useAuth();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const checkConnection = async () => {
+            try {
+                console.log('--- SENIOR DEV CONNECTIVITY AUDIT ---');
+
+                // Test 1: Check users table
+                const usersCheck = await supabase.from('users').select('name').limit(1);
+
+                // Test 2: Check sessions table (Control group)
+                const sessionsCheck = await supabase.from('sessions').select('id').limit(1);
+
+                console.log('Test 1 (users):', usersCheck.error ? usersCheck.error.message : 'SUCCESS');
+                console.log('Test 2 (sessions):', sessionsCheck.error ? sessionsCheck.error.message : 'SUCCESS');
+
+                if (usersCheck.error) {
+                    throw usersCheck.error;
+                }
+
+                setDbStatus('connected');
+            } catch (err) {
+                console.error('DB Connection Check failed:', {
+                    message: err.message,
+                    code: err.code,
+                    hint: err.hint
+                });
+                setDbStatus('error');
+            }
+        };
+        checkConnection();
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -19,7 +52,7 @@ const Login = () => {
             toast.success('Admin access granted');
             navigate('/');
         } catch (err) {
-            toast.error('Invalid credentials or unauthorized');
+            toast.error(err.message || 'Login failed');
         } finally {
             setLoading(false);
         }
@@ -40,8 +73,17 @@ const Login = () => {
                 background: 'white',
                 padding: '2.5rem',
                 borderRadius: '24px',
-                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                position: 'relative'
             }}>
+                {/* Connection Indicator */}
+                <div style={{ position: 'absolute', top: '1rem', right: '1.5rem', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.7rem' }}>
+                    <div style={{
+                        width: '8px', height: '8px', borderRadius: '50%',
+                        backgroundColor: dbStatus === 'connected' ? '#10b981' : dbStatus === 'error' ? '#ef4444' : '#94a3b8'
+                    }}></div>
+                    <span style={{ color: '#64748b' }}>DB: {dbStatus.toUpperCase()}</span>
+                </div>
                 <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                     <div style={{
                         display: 'inline-flex',

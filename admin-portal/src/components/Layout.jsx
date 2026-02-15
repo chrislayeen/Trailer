@@ -8,7 +8,8 @@ import {
     LogOut,
     Bot,
     ChevronRight,
-    ShieldCheck
+    ShieldCheck,
+    BarChart3
 } from 'lucide-react';
 
 const Layout = ({ children }) => {
@@ -24,6 +25,7 @@ const Layout = ({ children }) => {
     const navItems = [
         { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/' },
         { id: 'records', label: 'Session Records', icon: <FileText size={20} />, path: '/records' },
+        { id: 'analytics', label: 'Analytics Center', icon: <BarChart3 size={20} />, path: '/analytics' },
         { id: 'settings', label: 'Manage Users', icon: <Settings size={20} />, path: '/settings' },
     ];
 

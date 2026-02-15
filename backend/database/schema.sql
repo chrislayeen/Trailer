@@ -61,9 +61,9 @@ create table public.users (
 alter table public.users enable row level security;
 
 -- Policies for users
-create policy "Admins can view all users"
+create policy "Users are viewable by everyone"
   on public.users for select
-  using ( auth.role() = 'authenticated' );
+  using ( true );
 
 -- Update policy for sessions (to allow comments persistence)
 create policy "Allow session updates"

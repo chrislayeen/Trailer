@@ -67,18 +67,19 @@ const Layout = ({ children }) => {
                                     color: '#b91c1c',
                                     display: 'flex',
                                     alignItems: 'center',
-                                    gap: '0.5rem',
+                                    justifyContent: 'center',
                                     cursor: 'pointer',
                                     border: '1px solid #fee2e2',
-                                    padding: '6px 12px',
-                                    borderRadius: '999px',
+                                    width: '38px',
+                                    height: '38px',
+                                    borderRadius: '50%',
                                     fontSize: '0.85rem',
                                     fontWeight: 600,
                                     transition: 'all 0.2s'
                                 }}
+                                title={t('app.logout')}
                             >
-                                <LogOut size={16} />
-                                <span>{t('app.logout')}</span>
+                                <LogOut size={18} />
                             </button>
                         )}
                     </div>
