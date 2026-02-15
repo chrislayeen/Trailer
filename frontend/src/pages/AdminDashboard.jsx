@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSession } from '../context/SessionContext';
 import { Search, MapPin, Eye, CheckCircle, FileText, Calendar, Archive } from 'lucide-react';
 import BottomNav from '../components/BottomNav';
+import { supabase } from '../utils/supabase';
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -15,18 +16,26 @@ const AdminDashboard = () => {
     }, [isAdmin, navigate]);
 
     const filteredSessions = sessions.filter(s =>
-        s.chassisId.toLowerCase().includes(filter.toLowerCase()) ||
-        s.driverName.toLowerCase().includes(filter.toLowerCase())
+        (s.chassis_id || '').toLowerCase().includes(filter.toLowerCase()) ||
+        (s.driver_name || '').toLowerCase().includes(filter.toLowerCase())
     );
 
     // Mock data enrichment for the new UI fields (Origin Log, Record Hash)
-    const enrichedSessions = filteredSessions.map(s => ({
-        ...s,
-        originLog: '34.0522° N, 118.2437° W',
-        recordHash: `VK-${s.chassisId.substring(0, 4)}-S-CAL`,
-        status: s.photos.length > 3 ? 'Post-Assembly' : 'Pre-Assembly',
-        heroImage: s.photos.length > 0 ? s.photos[0].data : 'https://images.unsplash.com/photo-1626806819282-2c1dc01a5e0c?w=800&q=80'
-    }));
+    const enrichedSessions = filteredSessions.map(s => {
+        const heroPhoto = s.photos && s.photos.length > 0 ? s.photos[0] : null;
+        const heroUrl = heroPhoto
+            ? supabase.storage.from('photos').getPublicUrl(heroPhoto.storage_path).data.publicUrl
+            : 'https://images.unsplash.com/photo-1626806819282-2c1dc01a5e0c?w=800&q=80';
+
+        return {
+            ...s,
+            originLog: s.gps_lat ? `${s.gps_lat}° N, ${s.gps_lng}° W` : 'Manual Entry',
+            recordHash: `VK-${s.chassis_id?.substring(0, 4) || 'XXXX'}-S-CAL`, // Use chassis_id from DB
+            status: s.status === 'uploaded' ? 'Post-Assembly' : 'Pre-Assembly',
+            heroImage: heroUrl
+            // Note: DB uses snake_case keys (chassis_id, driver_name), map them if needed or use as is
+        };
+    });
 
     return (
         <div style={{ paddingBottom: '100px', backgroundColor: '#f3f4f6', minHeight: '100vh' }}>
@@ -98,11 +107,11 @@ const AdminDashboard = () => {
                             {/* Card Header */}
                             <div style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '12px' }}>
                                 <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#475569' }}>
-                                    {session.driverName.substring(0, 2).toUpperCase()}
+                                    {session.driver_name?.substring(0, 2).toUpperCase() || 'NA'}
                                 </div>
                                 <div style={{ flex: 1 }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <h3 style={{ fontSize: '1rem', fontWeight: 800 }}>Chassis #{session.chassisId}</h3>
+                                        <h3 style={{ fontSize: '1rem', fontWeight: 800 }}>Chassis #{session.chassis_id}</h3>
                                         <div style={{
                                             fontSize: '0.6rem',
                                             fontWeight: 800,
@@ -116,7 +125,7 @@ const AdminDashboard = () => {
                                         </div>
                                     </div>
                                     <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 500 }}>
-                                        {new Date(session.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • {new Date(session.endTime).toLocaleDateString()}
+                                        {new Date(session.end_time || session.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • {new Date(session.end_time || session.start_time).toLocaleDateString()}
                                     </div>
                                 </div>
                             </div>
@@ -130,7 +139,7 @@ const AdminDashboard = () => {
                                 </div>
                                 {/* Count Badge */}
                                 <div style={{ position: 'absolute', bottom: '16px', right: '16px', background: 'rgba(0,0,0,0.7)', color: 'white', padding: '4px 8px', borderRadius: '12px', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                    <FileText size={12} /> 1 of {session.photos.length}
+                                    <FileText size={12} /> 1 of {session.photos?.length || 0}
                                 </div>
                             </div>
 

@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation, Trans } from 'react-i18next';
 import { useSession } from '../context/SessionContext';
-import { Button, Input } from '../components/UI';
-import { QrCode, ScanLine, Clock, HelpCircle, Bot } from 'lucide-react';
+import { Button } from '../components/UI';
+import { QrCode, ScanLine, HelpCircle, Bot } from 'lucide-react';
 
 const QRScan = () => {
     const navigate = useNavigate();
     const { startNewSession } = useSession();
-    const [manualId, setManualId] = useState('');
+    const { t } = useTranslation();
     const [isScanning, setIsScanning] = useState(false);
 
     const handleScan = () => {
@@ -21,23 +22,15 @@ const QRScan = () => {
         }, 1500);
     };
 
-    const handleManualSubmit = (e) => {
-        e.preventDefault();
-        if (manualId.trim()) {
-            startNewSession(manualId.trim());
-            navigate('/session-start');
-        }
-    };
-
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', paddingBottom: '2rem' }}>
             {/* Branding */}
-            <div style={{ textAlign: 'center', marginBottom: '2rem', marginTop: '1rem' }}>
-                <div style={{ display: 'inline-flex', padding: '12px', background: '#dbeafe', borderRadius: '12px', color: 'var(--color-primary)', marginBottom: '1rem' }}>
+            <div style={{ textAlign: 'center', marginBottom: '2rem', marginTop: '1rem', position: 'relative', width: '100%', maxWidth: '320px' }}>
+                <div style={{ display: 'inline-flex', padding: '12px', background: '#dbeafe', borderRadius: '12px', color: 'var(--color-primary)', marginBottom: '1rem', marginTop: '2rem' }}>
                     <Bot size={32} />
                 </div>
-                <h3 style={{ color: 'var(--color-primary)', fontSize: '0.8rem', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Logistics Corp</h3>
-                <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--color-gray-900)' }}>Trailer Assembly Portal</h1>
+                <h3 style={{ color: 'var(--color-primary)', fontSize: '0.8rem', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.5rem' }}>{t('app.logistics_corp')}</h3>
+                <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--color-gray-900)' }}>{t('app.title')}</h1>
             </div>
 
             {/* Scan Frame */}
@@ -73,9 +66,9 @@ const QRScan = () => {
 
             {/* Main Action */}
             <div style={{ width: '100%', maxWidth: '320px', textAlign: 'center' }}>
-                <h2 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>Ready to Begin</h2>
+                <h2 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>{t('scan.ready_to_begin')}</h2>
                 <p style={{ color: 'var(--color-gray-500)', marginBottom: '1.5rem', lineHeight: '1.5' }}>
-                    Please scan the <strong style={{ color: 'var(--color-gray-800)', textDecoration: 'underline' }}>QR code</strong> located on the trailer's control panel to start recording images.
+                    <Trans i18nKey="scan.scan_instruction" components={{ 1: <strong style={{ color: 'var(--color-gray-800)', textDecoration: 'underline' }} /> }} />
                 </p>
 
                 <Button
@@ -87,12 +80,10 @@ const QRScan = () => {
                         marginBottom: '1.5rem'
                     }}
                 >
-                    <ScanLine size={20} /> Scan QR Code
+                    <ScanLine size={20} /> {t('scan.scan_button')}
                 </Button>
 
-                <button style={{ background: 'none', border: 'none', color: 'var(--color-gray-500)', display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '0.95rem', cursor: 'pointer' }}>
-                    <Clock size={16} /> View Recent Assemblies
-                </button>
+
             </div>
 
             {/* Spacer */}
@@ -101,18 +92,11 @@ const QRScan = () => {
             {/* Footer */}
             <div style={{ marginTop: '2rem', textAlign: 'center', color: '#9ca3af', fontSize: '0.875rem' }}>
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                    <HelpCircle size={14} /> Need Assistance?
+                    <HelpCircle size={14} /> {t('app.need_assistance')}
                 </div>
-                <p style={{ fontSize: '0.75rem', opacity: 0.8 }}>Contact supervisor or site manager.</p>
+                <p style={{ fontSize: '0.75rem', opacity: 0.8 }}>{t('app.contact_supervisor')}</p>
 
-                {/* Manual Entry Fallback for Demo */}
-                <div style={{ marginTop: '20px', borderTop: '1px solid #e5e7eb', paddingTop: '20px' }}>
-                    <p style={{ fontSize: '0.75rem', marginBottom: '10px' }}>Dev Fallback:</p>
-                    <form onSubmit={handleManualSubmit} style={{ display: 'flex', gap: '10px', maxWidth: '300px', margin: '0 auto' }}>
-                        <Input placeholder="Manual ID" value={manualId} onChange={e => setManualId(e.target.value)} style={{ marginBottom: 0 }} />
-                        <Button variant="secondary" onClick={handleManualSubmit} style={{ borderRadius: '12px', padding: '0.5rem 1rem' }}>Go</Button>
-                    </form>
-                </div>
+
             </div>
         </div>
     );

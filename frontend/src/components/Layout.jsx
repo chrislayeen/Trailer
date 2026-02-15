@@ -1,12 +1,15 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useSession } from '../context/SessionContext';
+import LanguageSwitcher from './LanguageSwitcher';
 import { LogOut, LayoutDashboard } from 'lucide-react';
 
 const Layout = ({ children }) => {
     const { driverName, isAdmin, logoutDriver, logoutAdmin } = useSession();
     const navigate = useNavigate();
     const location = useLocation();
+    const { t } = useTranslation();
 
     const isQrScreen = location.pathname === '/';
     const isScanner = location.pathname === '/scanner';
@@ -44,10 +47,12 @@ const Layout = ({ children }) => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         {/* Simulated Back button if not home, for visual completeness matching design */}
                         {!isQrScreen && <button style={{ background: 'none', border: 'none', padding: 0, marginRight: '8px' }} onClick={() => navigate(-1)}><div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#eff6ff', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>‹</div></button>}
-                        <h1 style={{ fontSize: '1.1rem', fontWeight: 600 }}>Trailer Assembly</h1>
+                        <h1 style={{ fontSize: '1.1rem', fontWeight: 600 }}>{t('app.header_title')}</h1>
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <LanguageSwitcher />
+
                         {driverName && !isAdminRoute && (
                             <span style={{ fontSize: '0.9rem', color: 'var(--color-primary)', fontWeight: 500 }}>
                                 {driverName}
@@ -62,11 +67,15 @@ const Layout = ({ children }) => {
                                     color: 'var(--color-gray-800)',
                                     display: 'flex',
                                     alignItems: 'center',
-                                    gap: '0.5rem'
+                                    gap: '0.5rem',
+                                    cursor: 'pointer',
+                                    border: 'none',
+                                    fontSize: '0.9rem',
+                                    fontWeight: 500
                                 }}
                             >
                                 <LogOut size={20} />
-                                <span style={{ display: 'none', '@media (min-width: 640px)': { display: 'inline' } }}>Logout</span>
+                                <span style={{ display: 'none', '@media (min-width: 640px)': { display: 'inline' } }}>{t('app.logout')}</span>
                             </button>
                         )}
                     </div>
