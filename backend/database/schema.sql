@@ -48,7 +48,31 @@ create policy "Authenticated users can insert photos"
   on public.photos for insert
   with check ( auth.role() = 'anon' or auth.role() = 'authenticated' );
 
--- Storage Bucket Setup (Manually create 'photos' bucket in dashboard but policies here)
--- insert into storage.buckets (id, name) values ('photos', 'photos');
--- create policy "Public Access" on storage.objects for select using ( bucket_id = 'photos' );
--- create policy "Authenticated Insert" on storage.objects for insert with check ( bucket_id = 'photos' );
+-- Create users table for role-based access
+create table public.users (
+  id uuid default uuid_generate_v4() primary key,
+  name text not null unique,
+  pin text not null,
+  role text check (role in ('driver', 'admin')) default 'driver',
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Enable RLS for users
+alter table public.users enable row level security;
+
+-- Policies for users
+create policy "Admins can view all users"
+  on public.users for select
+  using ( auth.role() = 'authenticated' );
+
+-- Update policy for sessions (to allow comments persistence)
+create policy "Allow session updates"
+  on public.sessions for update
+  using ( true )
+  with check ( true );
+
+-- Initial Admin Data (Simulated)
+-- Note: In a real app, you'd use Supabase Auth and link users to auth.users
+-- For this "name + pin" login, we'll query this table.
+insert into public.users (name, pin, role) 
+values ('Admin', '836548', 'admin');
