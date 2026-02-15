@@ -34,7 +34,7 @@ const Layout = ({ children }) => {
             {!isScanner && (
                 <header style={{
                     backgroundColor: 'var(--color-white)',
-                    color: 'var(--color-gray-800)',
+                    color: 'var(--slate-900)',
                     padding: '1rem',
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -46,7 +46,7 @@ const Layout = ({ children }) => {
                 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         {/* Simulated Back button if not home, for visual completeness matching design */}
-                        {!isQrScreen && <button style={{ background: 'none', border: 'none', padding: 0, marginRight: '8px' }} onClick={() => navigate(-1)}><div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#eff6ff', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>‹</div></button>}
+                        {!isQrScreen && <button style={{ background: 'none', border: 'none', padding: 0, marginRight: '8px' }} onClick={() => navigate(-1)}><div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#eff6ff', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>‹</div></button>}
                         <h1 style={{ fontSize: '1.1rem', fontWeight: 600 }}>{t('app.header_title')}</h1>
                     </div>
 
@@ -54,7 +54,7 @@ const Layout = ({ children }) => {
                         <LanguageSwitcher />
 
                         {driverName && !isAdminRoute && (
-                            <span style={{ fontSize: '0.9rem', color: 'var(--color-primary)', fontWeight: 500 }}>
+                            <span style={{ fontSize: '0.9rem', color: 'var(--primary)', fontWeight: 500 }}>
                                 {driverName}
                             </span>
                         )}

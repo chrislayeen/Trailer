@@ -26,11 +26,11 @@ const QRScan = () => {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', paddingBottom: '2rem' }}>
             {/* Branding */}
             <div style={{ textAlign: 'center', marginBottom: '2rem', marginTop: '1rem', position: 'relative', width: '100%', maxWidth: '320px' }}>
-                <div style={{ display: 'inline-flex', padding: '12px', background: '#dbeafe', borderRadius: '12px', color: 'var(--color-primary)', marginBottom: '1rem', marginTop: '2rem' }}>
+                <div style={{ display: 'inline-flex', padding: '12px', background: 'var(--slate-100)', borderRadius: '12px', color: 'var(--primary)', marginBottom: '1rem', marginTop: '2rem' }}>
                     <Bot size={32} />
                 </div>
-                <h3 style={{ color: 'var(--color-primary)', fontSize: '0.8rem', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.5rem' }}>{t('app.logistics_corp')}</h3>
-                <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--color-gray-900)' }}>{t('app.title')}</h1>
+                <h3 style={{ color: 'var(--primary)', fontSize: '0.8rem', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.5rem' }}>{t('app.logistics_corp')}</h3>
+                <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--slate-900)' }}>{t('app.title')}</h1>
             </div>
 
             {/* Scan Frame */}
@@ -38,37 +38,37 @@ const QRScan = () => {
                 position: 'relative',
                 width: '280px',
                 height: '280px',
-                border: '2px dashed #93c5fd',
+                border: '2px dashed var(--slate-400)',
                 borderRadius: '24px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: '#eff6ff',
+                backgroundColor: 'var(--slate-50)',
                 marginBottom: '2rem'
             }}>
                 {/* Corner Markers */}
-                <div style={{ position: 'absolute', top: 20, left: 20, width: 40, height: 40, borderTop: '4px solid var(--color-primary)', borderLeft: '4px solid var(--color-primary)', borderTopLeftRadius: '8px' }}></div>
-                <div style={{ position: 'absolute', top: 20, right: 20, width: 40, height: 40, borderTop: '4px solid var(--color-primary)', borderRight: '4px solid var(--color-primary)', borderTopRightRadius: '8px' }}></div>
-                <div style={{ position: 'absolute', bottom: 20, left: 20, width: 40, height: 40, borderBottom: '4px solid var(--color-primary)', borderLeft: '4px solid var(--color-primary)', borderBottomLeftRadius: '8px' }}></div>
-                <div style={{ position: 'absolute', bottom: 20, right: 20, width: 40, height: 40, borderBottom: '4px solid var(--color-primary)', borderRight: '4px solid var(--color-primary)', borderBottomRightRadius: '8px' }}></div>
+                <div style={{ position: 'absolute', top: 20, left: 20, width: 40, height: 40, borderTop: '4px solid var(--primary)', borderLeft: '4px solid var(--primary)', borderTopLeftRadius: '8px' }}></div>
+                <div style={{ position: 'absolute', top: 20, right: 20, width: 40, height: 40, borderTop: '4px solid var(--primary)', borderRight: '4px solid var(--primary)', borderTopRightRadius: '8px' }}></div>
+                <div style={{ position: 'absolute', bottom: 20, left: 20, width: 40, height: 40, borderBottom: '4px solid var(--primary)', borderLeft: '4px solid var(--primary)', borderBottomLeftRadius: '8px' }}></div>
+                <div style={{ position: 'absolute', bottom: 20, right: 20, width: 40, height: 40, borderBottom: '4px solid var(--primary)', borderRight: '4px solid var(--primary)', borderBottomRightRadius: '8px' }}></div>
 
-                <div style={{ color: isScanning ? 'var(--color-primary)' : '#93c5fd', animation: isScanning ? 'pulse 1s infinite' : 'none' }}>
+                <div style={{ color: isScanning ? 'var(--primary)' : 'var(--slate-400)', animation: isScanning ? 'pulse 1s infinite' : 'none' }}>
                     <QrCode size={80} opacity={isScanning ? 1 : 0.5} />
                 </div>
 
                 {/* Scanning Dots */}
                 <div style={{ position: 'absolute', bottom: '80px', display: 'flex', gap: '6px' }}>
-                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--color-primary)' }}></div>
-                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#93c5fd' }}></div>
-                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#93c5fd' }}></div>
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--primary)' }}></div>
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--slate-400)' }}></div>
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--slate-400)' }}></div>
                 </div>
             </div>
 
             {/* Main Action */}
             <div style={{ width: '100%', maxWidth: '320px', textAlign: 'center' }}>
                 <h2 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>{t('scan.ready_to_begin')}</h2>
-                <p style={{ color: 'var(--color-gray-500)', marginBottom: '1.5rem', lineHeight: '1.5' }}>
-                    <Trans i18nKey="scan.scan_instruction" components={{ 1: <strong style={{ color: 'var(--color-gray-800)', textDecoration: 'underline' }} /> }} />
+                <p style={{ color: 'var(--slate-500)', marginBottom: '1.5rem', lineHeight: '1.5' }}>
+                    <Trans i18nKey="scan.scan_instruction" components={{ 1: <strong style={{ color: 'var(--slate-900)', textDecoration: 'underline' }} /> }} />
                 </p>
 
                 <Button

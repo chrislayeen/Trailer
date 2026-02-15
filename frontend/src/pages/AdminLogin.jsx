@@ -30,7 +30,7 @@ const AdminLogin = () => {
 
     return (
         <div style={{ maxWidth: '400px', margin: '4rem auto', textAlign: 'center' }}>
-            <div style={{ marginBottom: '2rem', color: 'var(--color-primary)' }}>
+            <div style={{ marginBottom: '2rem', color: 'var(--primary)' }}>
                 <ShieldCheck size={48} />
                 <h2>Admin Portal</h2>
             </div>

@@ -30,7 +30,7 @@ const SessionDetails = () => {
             </Button>
 
             <div style={{ background: 'white', padding: '1.5rem', borderRadius: 'var(--radius-lg)', marginBottom: '1.5rem' }}>
-                <h2 style={{ fontSize: '1.5rem', color: 'var(--color-primary)', marginBottom: '0.5rem' }}>{session.chassis_id}</h2>
+                <h2 style={{ fontSize: '1.5rem', color: 'var(--primary)', marginBottom: '0.5rem' }}>{session.chassis_id}</h2>
 
                 <div style={{ display: 'grid', gap: '0.5rem', fontSize: '1rem', color: '#4b5563' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -53,7 +53,7 @@ const SessionDetails = () => {
                     {session.comments && (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid var(--color-gray-200)' }}>
                             <span style={{ fontSize: '0.9rem', color: 'var(--color-gray-800)' }}>Notes:</span>
-                            <p style={{ fontStyle: 'italic', color: 'var(--color-primary)' }}>"{session.comments}"</p>
+                            <p style={{ fontStyle: 'italic', color: 'var(--primary)' }}>"{session.comments}"</p>
                         </div>
                     )}
                 </div>

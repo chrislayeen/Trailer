@@ -32,7 +32,7 @@ const BottomNav = () => {
                             width: '56px',
                             height: '56px',
                             borderRadius: '50%',
-                            background: 'var(--color-primary)',
+                            background: 'var(--primary)',
                             border: '4px solid white',
                             display: 'flex',
                             alignItems: 'center',
@@ -52,10 +52,10 @@ const BottomNav = () => {
                     </div>
                 ) : (
                     <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', cursor: 'pointer', minWidth: '60px' }}>
-                        <div style={{ color: item.active ? 'var(--color-primary)' : '#9ca3af' }}>
+                        <div style={{ color: item.active ? 'var(--primary)' : '#9ca3af' }}>
                             {item.icon}
                         </div>
-                        <span style={{ fontSize: '0.65rem', fontWeight: 600, color: item.active ? 'var(--color-primary)' : '#9ca3af', textTransform: 'uppercase' }}>
+                        <span style={{ fontSize: '0.65rem', fontWeight: 600, color: item.active ? 'var(--primary)' : '#9ca3af', textTransform: 'uppercase' }}>
                             {item.label}
                         </span>
                     </div>

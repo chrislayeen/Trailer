@@ -8,13 +8,13 @@ const LoadingFallback = () => {
             alignItems: 'center',
             height: '100%',
             minHeight: '50vh', // Ensure it takes up space during load
-            color: 'var(--color-primary)',
+            color: 'var(--primary)',
         }}>
             <div style={{
                 width: '40px',
                 height: '40px',
-                border: '4px solid var(--color-gray-200)',
-                borderTop: '4px solid var(--color-primary)',
+                border: '4px solid var(--slate-200)',
+                borderTop: '4px solid var(--primary)',
                 borderRadius: '50%',
                 animation: 'spin 1s linear infinite'
             }}></div>

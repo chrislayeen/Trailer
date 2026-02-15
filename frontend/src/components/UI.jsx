@@ -13,31 +13,31 @@ export const Button = ({ children, onClick, variant = 'primary', disabled = fals
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '0.5rem',
+        gap: 'var(--space-2)',
         cursor: 'pointer',
         ...style
     };
 
     const variants = {
         primary: {
-            backgroundColor: 'var(--color-primary)',
+            backgroundColor: 'var(--primary)',
             color: 'white',
-            boxShadow: '0 4px 6px -1px rgba(29, 78, 216, 0.3)'
+            boxShadow: '0 4px 6px -1px rgba(29, 78, 216, 0.2)'
         },
         secondary: {
-            backgroundColor: 'var(--color-white)',
-            color: 'var(--color-primary)',
-            border: '1px solid var(--color-gray-200)',
+            backgroundColor: 'white',
+            color: 'var(--primary)',
+            border: '1px solid var(--slate-200)',
             boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
         },
         danger: {
-            backgroundColor: 'var(--color-error)',
+            backgroundColor: 'var(--error)',
             color: 'white',
         },
         outline: {
             backgroundColor: 'transparent',
-            border: '1px solid var(--color-gray-200)',
-            color: 'var(--color-gray-800)'
+            border: '1px solid var(--slate-200)',
+            color: 'var(--slate-900)'
         }
     };
 
@@ -50,10 +50,10 @@ export const Button = ({ children, onClick, variant = 'primary', disabled = fals
 
 export const Input = ({ value, onChange, placeholder, type = 'text', label, error, ...props }) => {
     return (
-        <div style={{ marginBottom: '1rem', width: '100%' }}>
-            {label && <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.9rem', color: 'var(--color-gray-800)' }}>{label}</label>}
+        <div style={{ marginBottom: 'var(--space-4)', width: '100%' }}>
+            {label && <label style={{ display: 'block', marginBottom: 'var(--space-2)', fontWeight: 600, fontSize: '0.9rem', color: 'var(--slate-900)' }}>{label}</label>}
             <div style={{ position: 'relative' }}>
-                {props.icon && <div style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-gray-400)' }}>{props.icon}</div>}
+                {props.icon && <div style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--slate-400)' }}>{props.icon}</div>}
                 <input
                     type={type}
                     value={value}
@@ -63,17 +63,17 @@ export const Input = ({ value, onChange, placeholder, type = 'text', label, erro
                         width: '100%',
                         padding: '1rem',
                         paddingLeft: props.icon ? '3rem' : '1rem',
-                        borderRadius: 'var(--radius-lg)',
-                        border: `1px solid ${error ? 'var(--color-error)' : 'var(--color-gray-200)'}`,
+                        borderRadius: 'var(--radius-md)',
+                        border: `1px solid ${error ? 'var(--error)' : 'var(--slate-200)'}`,
                         fontSize: '1rem',
                         outline: 'none',
-                        backgroundColor: 'var(--color-white)',
+                        backgroundColor: 'white',
                         transition: 'border-color 0.2s',
                     }}
                     {...props}
                 />
             </div>
-            {error && <span style={{ color: 'var(--color-error)', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>{error}</span>}
+            {error && <span style={{ color: 'var(--error)', fontSize: '0.875rem', marginTop: 'var(--space-1)', display: 'block' }}>{error}</span>}
         </div>
     );
 };

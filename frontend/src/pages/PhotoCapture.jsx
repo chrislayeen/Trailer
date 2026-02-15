@@ -159,20 +159,20 @@ const PhotoCapture = () => {
             {/* Header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
                 <div>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-gray-500)', textTransform: 'uppercase' }}>{t('session.chassis_number')}</label>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-primary)' }}>{currentSession.chassis_id}</div>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--slate-500)', textTransform: 'uppercase' }}>{t('session.chassis_number')}</label>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--primary)' }}>{currentSession.chassis_id}</div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '999px', background: '#ecfdf5', color: '#059669', fontSize: '0.75rem', fontWeight: 700 }}>
                     <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#059669' }}></div> {t('session.session_active')}
                 </div>
             </div>
 
-            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-gray-500)', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'block' }}>{t('session.existing_images')}</label>
+            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--slate-500)', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'block' }}>{t('session.existing_images')}</label>
 
             {/* Image Grid */}
             <div style={{
                 background: 'white',
-                borderRadius: 'var(--radius-xl)',
+                borderRadius: 'var(--radius-lg)',
                 padding: '1rem',
                 marginBottom: '1.5rem',
                 minHeight: '200px',
@@ -200,7 +200,7 @@ const PhotoCapture = () => {
 
             {/* Actions */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
-                <Button variant="primary" fullWidth onClick={() => document.getElementById('file-upload').click()} style={{ background: 'var(--color-primary)', display: 'flex', gap: '8px' }}>
+                <Button variant="primary" fullWidth onClick={() => document.getElementById('file-upload').click()} style={{ background: 'var(--primary)', display: 'flex', gap: '8px' }}>
                     <ImageIcon size={20} /> {t('session.select_gallery')}
                 </Button>
                 {/* Hidden File Input for Demo */}
@@ -239,14 +239,14 @@ const PhotoCapture = () => {
             </div>
 
             {/* GPS Location Card */}
-            <div style={{ background: 'white', padding: '1.5rem', borderRadius: 'var(--radius-xl)', marginBottom: '2rem', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+            <div style={{ background: 'white', padding: '1.5rem', borderRadius: 'var(--radius-lg)', marginBottom: '2rem', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 700 }}>
-                        <MapPin size={20} color="var(--color-primary)" /> {t('session.gps_location')}
+                        <MapPin size={20} color="var(--primary)" /> {t('session.gps_location')}
                     </div>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--color-gray-500)', cursor: 'pointer' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--slate-500)', cursor: 'pointer' }}>
                         {/* Interactive Toggle */}
-                        <div style={{ width: '36px', height: '20px', background: manualMode ? 'var(--color-primary)' : '#e5e7eb', borderRadius: '999px', position: 'relative', transition: 'background 0.2s' }}>
+                        <div style={{ width: '36px', height: '20px', background: manualMode ? 'var(--primary)' : '#e5e7eb', borderRadius: '999px', position: 'relative', transition: 'background 0.2s' }}>
                             <div style={{ position: 'absolute', left: manualMode ? '18px' : '2px', top: '2px', width: '16px', height: '16px', borderRadius: '50%', background: 'white', transition: 'left 0.2s' }}></div>
                         </div>
                         <input type="checkbox" checked={manualMode} onChange={() => setManualMode(!manualMode)} style={{ display: 'none' }} />
@@ -262,7 +262,7 @@ const PhotoCapture = () => {
                                 type="text"
                                 value={coords.lat || ''}
                                 onChange={(e) => handleManualCoordChange('lat', e.target.value)}
-                                style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-primary)', marginTop: '4px', fontWeight: 500, outline: 'none' }}
+                                style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--primary)', marginTop: '4px', fontWeight: 500, outline: 'none' }}
                             />
                         ) : (
                             <div style={{ padding: '0.75rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-gray-200)', marginTop: '4px', fontWeight: 500, background: '#f9fafb' }}>
@@ -277,7 +277,7 @@ const PhotoCapture = () => {
                                 type="text"
                                 value={coords.lng || ''}
                                 onChange={(e) => handleManualCoordChange('lng', e.target.value)}
-                                style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-primary)', marginTop: '4px', fontWeight: 500, outline: 'none' }}
+                                style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--primary)', marginTop: '4px', fontWeight: 500, outline: 'none' }}
                             />
                         ) : (
                             <div style={{ padding: '0.75rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-gray-200)', marginTop: '4px', fontWeight: 500, background: '#f9fafb' }}>
@@ -292,7 +292,7 @@ const PhotoCapture = () => {
                     <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800&q=80" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }} />
                     <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
                         <div style={{ width: '30px', height: '30px', background: 'rgba(29, 78, 216, 0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'pulse 2s infinite' }}>
-                            <div style={{ width: '12px', height: '12px', background: 'var(--color-primary)', borderRadius: '50%', border: '2px solid white' }}></div>
+                            <div style={{ width: '12px', height: '12px', background: 'var(--primary)', borderRadius: '50%', border: '2px solid white' }}></div>
                         </div>
                     </div>
                 </div>

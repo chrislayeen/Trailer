@@ -300,7 +300,7 @@ const Scanner = () => {
                             onClick={startScanner}
                             style={{
                                 padding: '1rem 2rem',
-                                background: 'var(--color-primary)',
+                                background: 'var(--primary)',
                                 color: 'white',
                                 border: 'none',
                                 borderRadius: '999px',
@@ -452,7 +452,7 @@ const Scanner = () => {
                                 style={{
                                     flex: 1,
                                     padding: '1rem',
-                                    background: 'var(--color-primary)',
+                                    background: 'var(--primary)',
                                     color: 'white',
                                     border: 'none',
                                     borderRadius: '12px',

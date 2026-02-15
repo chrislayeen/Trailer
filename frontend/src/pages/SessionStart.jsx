@@ -64,7 +64,7 @@ const SessionStart = () => {
             <div style={{ background: 'white', borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.05)', marginBottom: '2rem' }}>
                 <div style={{ padding: '1.5rem' }}>
                     <div style={{ marginBottom: '1.5rem' }}>
-                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-primary)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>{t('session.chassis_number')}</label>
+                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>{t('session.chassis_number')}</label>
                         <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--color-gray-900)', marginTop: '4px' }}>
                             {currentSession.chassis_id}
                         </div>
@@ -86,7 +86,7 @@ const SessionStart = () => {
             {/* Session Start Form */}
             <div style={{ marginBottom: '2rem' }}>
                 <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>
-                    <User size={24} fill="var(--color-primary)" stroke="none" /> {t('session.start_session')}
+                    <User size={24} fill="var(--primary)" stroke="none" /> {t('session.start_session')}
                 </h3>
                 <p style={{ color: 'var(--color-gray-500)', marginBottom: '1.5rem' }}>Enter your credentials to begin inspection</p>
 
@@ -133,10 +133,10 @@ const SessionStart = () => {
             <div style={{ textAlign: 'center', borderTop: '1px solid var(--color-gray-200)', paddingTop: '2rem' }}>
                 <h4 style={{ color: 'var(--color-gray-500)', marginBottom: '1rem' }}>{t('app.need_assistance')}</h4>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginBottom: '2rem' }}>
-                    <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--color-primary)', textDecoration: 'none', fontWeight: 600 }}>
+                    <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--primary)', textDecoration: 'none', fontWeight: 600 }}>
                         <Phone size={16} /> 1-800-TRAILER
                     </a>
-                    <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--color-primary)', textDecoration: 'none', fontWeight: 600 }}>
+                    <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--primary)', textDecoration: 'none', fontWeight: 600 }}>
                         <Mail size={16} /> Support Email
                     </a>
                 </div>
