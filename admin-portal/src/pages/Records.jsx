@@ -63,6 +63,11 @@ const RecordDetailModal = ({ session, onClose }) => {
                                 src={supabase.storage.from('photos').getPublicUrl(activePhoto.storage_path).data.publicUrl}
                                 style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
                                 alt="Active Preview"
+                                onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.style.display = 'none';
+                                    e.target.parentNode.innerHTML = '<div style="color:#64748b;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:1rem"><AlertTriangle size={48}/><p>ACCESS DENIED OR EXPIRED</p><p style="font-size:0.8rem;font-weight:500">Ensure the bucket is public in Supabase</p></div>';
+                                }}
                             />
                         ) : (
                             <div style={{ color: '#475569' }}>NO PREVIEW AVAILABLE</div>
@@ -291,7 +296,15 @@ const Records = () => {
                                         <div style={{ display: 'flex', gap: '4px' }}>
                                             {session.photos?.slice(0, 3).map(p => (
                                                 <div key={p.id} style={{ width: '32px', height: '32px', borderRadius: '6px', overflow: 'hidden', background: '#f1f5f9' }}>
-                                                    <img src={supabase.storage.from('photos').getPublicUrl(p.storage_path).data.publicUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                    <img
+                                                        src={supabase.storage.from('photos').getPublicUrl(p.storage_path).data.publicUrl}
+                                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                        onError={(e) => {
+                                                            e.target.onerror = null;
+                                                            e.target.style.display = 'none';
+                                                            e.target.parentNode.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%"><X size={12} color="#94a3b8"/></div>';
+                                                        }}
+                                                    />
                                                 </div>
                                             ))}
                                             {session.photos?.length > 3 && (
@@ -327,6 +340,11 @@ const Records = () => {
                                 <img
                                     src={session.photos?.[0] ? supabase.storage.from('photos').getPublicUrl(session.photos[0].storage_path).data.publicUrl : ''}
                                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                    onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.style.display = 'none';
+                                        e.target.parentNode.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;background:#f1f5f9;color:#94a3b8"><AlertTriangle size={32}/></div>';
+                                    }}
                                 />
                                 <div style={{ position: 'absolute', top: '12px', right: '12px' }}>
                                     <input type="checkbox" checked={selectedIds.includes(session.id)} onChange={() => toggleSelect(session.id)} style={{ width: '20px', height: '20px' }} />

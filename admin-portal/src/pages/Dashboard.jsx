@@ -70,6 +70,11 @@ const ActivityFeedItem = ({ session, delay }) => (
                         src={supabase.storage.from('photos').getPublicUrl(session.photos[0].storage_path).data.publicUrl}
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         alt="Preview"
+                        onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = ''; // Clear source
+                            e.target.parentNode.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#94a3b8"><AlertCircle size={20}/></div>';
+                        }}
                     />
                 ) : (
                     <CheckCircle size={22} color="#cbd5e1" />
