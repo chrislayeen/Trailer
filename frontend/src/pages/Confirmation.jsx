@@ -169,23 +169,27 @@ const Confirmation = () => {
                     <button
                         onClick={handleDashboard}
                         style={{
-                            background: 'none',
-                            border: 'none',
+                            width: '100%',
+                            padding: '1rem',
+                            background: 'white',
                             color: '#2563eb',
-                            fontWeight: 700,
+                            border: '1px solid #e5e7eb',
+                            borderRadius: '12px',
                             fontSize: '1rem',
+                            fontWeight: 700,
                             cursor: 'pointer',
-                            padding: '0.5rem'
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            transition: 'all 0.2s',
+                            boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
                         }}
                     >
                         {t('confirmation.return_home')}
                     </button>
                 </div>
 
-                {/* iOS Bottom Bar Indicator Simulation */}
-                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
-                    <div style={{ width: '140px', height: '5px', background: '#e2e8f0', borderRadius: '10px' }}></div>
-                </div>
+
             </div>
         </div>
     );

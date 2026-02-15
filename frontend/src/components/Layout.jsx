@@ -63,19 +63,22 @@ const Layout = ({ children }) => {
                             <button
                                 onClick={handleLogout}
                                 style={{
-                                    background: 'transparent',
-                                    color: 'var(--color-gray-800)',
+                                    background: '#fef2f2',
+                                    color: '#b91c1c',
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '0.5rem',
                                     cursor: 'pointer',
-                                    border: 'none',
-                                    fontSize: '0.9rem',
-                                    fontWeight: 500
+                                    border: '1px solid #fee2e2',
+                                    padding: '6px 12px',
+                                    borderRadius: '999px',
+                                    fontSize: '0.85rem',
+                                    fontWeight: 600,
+                                    transition: 'all 0.2s'
                                 }}
                             >
-                                <LogOut size={20} />
-                                <span style={{ display: 'none', '@media (min-width: 640px)': { display: 'inline' } }}>{t('app.logout')}</span>
+                                <LogOut size={16} />
+                                <span>{t('app.logout')}</span>
                             </button>
                         )}
                     </div>
