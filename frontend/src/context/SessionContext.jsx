@@ -68,7 +68,7 @@ export const SessionProvider = ({ children }) => {
       if (error) throw error;
       if (!data) throw new Error('Invalid credentials');
 
-      setDriverName(data.name);
+      setDriverName(data.user_name);
       return true;
     } catch (error) {
       console.error('Driver login error:', error);
