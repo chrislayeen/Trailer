@@ -40,7 +40,7 @@
         "chassis_number": "Chassis Number",
         "existing_images": "Existing Images",
         "no_images": "No images yet",
-        "select_gallery": "Select Images from gallery",
+        "select_images": "Select Images",
         "capture_images": "Capture Images",
         "add_comment": "ADD COMMENT",
         "comment_placeholder": "Describe condition, issues or loading status...",

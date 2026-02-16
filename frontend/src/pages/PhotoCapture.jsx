@@ -25,6 +25,7 @@ const PhotoCapture = () => {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const fileInputRef = useRef(null);
+    const galleryInputRef = useRef(null);
     const streamRef = useRef(null);
     const imageCaptureRef = useRef(null);
 
@@ -118,8 +119,11 @@ const PhotoCapture = () => {
     };
 
     const triggerNativeCamera = () => {
-        setCameraOpen(true);
         if (fileInputRef.current) fileInputRef.current.click();
+    };
+
+    const triggerGallery = () => {
+        if (galleryInputRef.current) galleryInputRef.current.click();
     };
 
     const handleSubmit = async () => {
@@ -179,6 +183,45 @@ const PhotoCapture = () => {
                         </div>
                     ))
                 )}
+            </div>
+
+            {/* Capture Actions */}
+            <div style={{ display: 'flex', gap: '12px', marginBottom: '1.5rem' }}>
+                <input
+                    type="file"
+                    ref={galleryInputRef}
+                    accept="image/*"
+                    onChange={handleNativeCapture}
+                    style={{ display: 'none' }}
+                />
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    accept="image/*"
+                    capture="environment"
+                    onChange={handleNativeCapture}
+                    style={{ display: 'none' }}
+                />
+                <canvas ref={canvasRef} style={{ display: 'none' }} />
+
+                <Button
+                    variant="outline"
+                    fullWidth
+                    onClick={triggerGallery}
+                    disabled={capturing}
+                    style={{ padding: '0.875rem', fontSize: '0.9rem', fontWeight: 600 }}
+                >
+                    <Upload size={18} style={{ marginRight: '8px' }} /> {t('session.select_images') || 'Select Images'}
+                </Button>
+                <Button
+                    variant="primary"
+                    fullWidth
+                    onClick={triggerNativeCamera}
+                    disabled={capturing}
+                    style={{ padding: '0.875rem', fontSize: '0.9rem', fontWeight: 600 }}
+                >
+                    <Camera size={18} style={{ marginRight: '8px' }} /> {capturing ? t('session.processing') || 'Processing...' : t('session.capture_images') || 'Capture Images'}
+                </Button>
             </div>
 
 
@@ -261,36 +304,8 @@ const PhotoCapture = () => {
                         </div>
                     </div>
                 </div>
-                {/* Native Capture Launcher */}
-                <div style={{ padding: '64px 32px', textAlign: 'center', background: 'var(--slate-50)', borderRadius: '20px', border: '2px dashed var(--slate-200)', marginBottom: '24px' }}>
-                    <div style={{ width: '80px', height: '80px', background: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', boxShadow: 'var(--shadow-sm)' }}>
-                        <Camera size={40} color="var(--primary)" />
-                    </div>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--slate-900)' }}>Device-Native Pro Capture</h3>
-                    <p style={{ color: 'var(--slate-500)', fontSize: '0.9rem', maxWidth: '280px', margin: '12px auto 32px', lineHeight: '1.6' }}>
-                        Capture original Full-Sensors JPGs using your <strong>Phone's Native Camera App</strong> for maximum HDR and noise reduction.
-                    </p>
-
-                    <input
-                        type="file"
-                        ref={fileInputRef}
-                        accept="image/*"
-                        capture="environment"
-                        onChange={handleNativeCapture}
-                        style={{ display: 'none' }}
-                    />
-                    <canvas ref={canvasRef} style={{ display: 'none' }} />
-
-                    <Button
-                        variant="primary"
-                        onClick={triggerNativeCamera}
-                        disabled={capturing}
-                        style={{ padding: '1.25rem 2rem', fontWeight: 800, fontSize: '1rem' }}
-                    >
-                        {capturing ? 'PROCESSING HQ FILE...' : 'LAUNCH SYSTEM CAMERA'}
-                    </Button>
-                </div>
             </div>
+
             {/* Submit */}
             <Button
                 fullWidth
