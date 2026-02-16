@@ -24,6 +24,7 @@ const PhotoCapture = () => {
 
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
+    const fileInputRef = useRef(null);
     const streamRef = useRef(null);
     const imageCaptureRef = useRef(null);
 
@@ -301,7 +302,6 @@ const PhotoCapture = () => {
                 {isSubmitting ? t('session.submitting') : t('session.submit_images')} <ChevronLeft size={20} style={{ transform: 'rotate(180deg)' }} />
             </Button>
         </div>
-        </div >
     );
 };
 
