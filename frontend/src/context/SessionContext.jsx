@@ -58,11 +58,11 @@ export const SessionProvider = ({ children }) => {
       if (!name || !pin) throw new Error('Name and PIN are required');
 
       const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .ilike('name', name)
-        .eq('pin', pin)
-        .eq('role', 'driver')
+        .rpc('verify_user_credentials', {
+          p_name: name,
+          p_pin: pin,
+          p_role: 'driver'
+        })
         .maybeSingle();
 
       if (error) throw error;
