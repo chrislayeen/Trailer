@@ -53,8 +53,27 @@ export const SessionProvider = ({ children }) => {
   }, [isAdmin]);
 
   // Actions
-  const loginDriver = useCallback((name) => {
-    setDriverName(name);
+  const loginDriver = useCallback(async (name, pin) => {
+    try {
+      if (!name || !pin) throw new Error('Name and PIN are required');
+
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .ilike('name', name)
+        .eq('pin', pin)
+        .eq('role', 'driver')
+        .maybeSingle();
+
+      if (error) throw error;
+      if (!data) throw new Error('Invalid credentials');
+
+      setDriverName(data.name);
+      return true;
+    } catch (error) {
+      console.error('Driver login error:', error);
+      return false;
+    }
   }, []);
 
   const logoutDriver = useCallback(() => {

@@ -22,35 +22,26 @@ const SessionStart = () => {
     const handlePinChange = (e) => {
         const val = e.target.value.replace(/\D/g, '').slice(0, 6);
         setPin(val);
-
-        if (val.length === 6) {
-            if (val === '836548') {
-                if (name.trim()) {
-                    loginDriver(name);
-                    navigate('/capture');
-                } else {
-                    setError(t('session.validation_error'));
-                }
-            } else {
-                setError('Invalid PIN');
-            }
-        } else {
-            setError('');
-        }
+        setError('');
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!name.trim()) {
             setError(t('session.validation_error'));
             return;
         }
-        if (pin !== '836548') {
-            setError('Invalid PIN');
+        if (pin.length < 6) {
+            setError('PIN must be 6 digits');
             return;
         }
-        loginDriver(name);
-        navigate('/capture');
+
+        const success = await loginDriver(name, pin);
+        if (success) {
+            navigate('/capture');
+        } else {
+            setError('Invalid credentials');
+        }
     }
 
     if (!currentSession) return null;
