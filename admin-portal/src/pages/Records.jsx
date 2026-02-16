@@ -23,114 +23,126 @@ import {
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
+import { downloadCSV } from '../utils/export';
 
 const RecordDetailModal = ({ session, onClose }) => {
     if (!session) return null;
-
     const [activePhoto, setActivePhoto] = useState(session.photos?.[0] || null);
 
     return (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.95)', zIndex: 1000, display: 'flex', padding: '2rem' }}>
-            <button onClick={onClose} style={{ position: 'absolute', top: '2rem', right: '2rem', background: 'rgba(255,255,255,0.1)', color: 'white', border: 'none', width: '48px', height: '48px', borderRadius: '50%', cursor: 'pointer', zIndex: 10 }}>
-                <X size={24} />
-            </button>
-
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem', color: 'white' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2rem' }}>
+        <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="modal-backdrop"
+            style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px' }}
+        >
+            <motion.div
+                initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
+                style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', position: 'relative', maxWidth: '1100px', width: '100%', height: 'calc(100vh - 64px)', boxShadow: 'var(--shadow-md)', display: 'flex', flexDirection: 'column' }}
+            >
+                {/* Modal Header */}
+                <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--slate-200)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '0.5rem' }}>
-                            <h2 style={{ fontSize: '2.5rem', fontWeight: 900, letterSpacing: '-1px' }}>Chassis #{session.chassis_id}</h2>
-                            <div style={{ background: '#3b82f6', padding: '6px 16px', borderRadius: '100px', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase' }}>
-                                Post-Assembly
-                            </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--slate-900)' }}>Audit Record: #{session.chassis_id}</h2>
+                            <span style={{ padding: '4px 10px', background: 'var(--slate-100)', borderRadius: '6px', fontSize: '0.7rem', fontWeight: 700, color: 'var(--slate-600)' }}>POST-ASSEMBLY</span>
                         </div>
-                        <p style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <User size={16} /> Recorded by <span style={{ color: 'white', fontWeight: 700 }}>{session.driver_name}</span> • {format(new Date(session.end_time), 'PPpp')}
+                        <p style={{ fontSize: '0.85rem', color: 'var(--slate-400)', marginTop: '2px' }}>
+                            Captured by <strong>{session.driver_name}</strong> on {format(new Date(session.end_time), 'MMM d, yyyy • HH:mm')}
                         </p>
                     </div>
-                    <div style={{ display: 'flex', gap: '12px' }}>
-                        <button style={{ padding: '12px 24px', background: 'white', color: '#0f172a', borderRadius: '12px', fontWeight: 700, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <Download size={18} /> DOWNLOAD ALL BUNDLE
-                        </button>
-                    </div>
+                    <button onClick={onClose} style={{ background: 'var(--slate-100)', border: 'none', width: '36px', height: '36px', borderRadius: '10px', cursor: 'pointer', color: 'var(--slate-600)' }}>
+                        <X size={20} />
+                    </button>
                 </div>
 
-                <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 340px', gap: '2rem', minHeight: 0 }}>
+                {/* Modal Content */}
+                <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
                     {/* Main Viewer */}
-                    <div style={{ position: 'relative', background: '#000', borderRadius: '24px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ flex: 1, background: 'var(--slate-900)', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         {activePhoto ? (
                             <img
                                 src={supabase.storage.from('photos').getPublicUrl(activePhoto.storage_path).data.publicUrl}
                                 style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-                                alt="Active Preview"
-                                onError={(e) => {
-                                    e.target.onerror = null;
-                                    e.target.style.display = 'none';
-                                    e.target.parentNode.innerHTML = '<div style="color:#64748b;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:1rem"><AlertTriangle size={48}/><p>ACCESS DENIED OR EXPIRED</p><p style="font-size:0.8rem;font-weight:500">Ensure the bucket is public in Supabase</p></div>';
-                                }}
+                                alt="Inspection"
                             />
                         ) : (
-                            <div style={{ color: '#475569' }}>NO PREVIEW AVAILABLE</div>
+                            <div style={{ color: 'var(--slate-600)', fontWeight: 600 }}>NO SOURCE IMAGE</div>
                         )}
-                        <div style={{ position: 'absolute', bottom: '2rem', left: '2rem', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(10px)', padding: '12px 20px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                            <div style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 700 }}>IMAGE METADATA</div>
-                            <div style={{ fontSize: '0.9rem' }}>Type: {activePhoto?.photo_type || 'Standard'} • Time: {format(new Date(activePhoto?.taken_at || session.end_time), 'HH:mm:ss')}</div>
+
+                        <div style={{ position: 'absolute', bottom: '24px', left: '24px', display: 'flex', gap: '8px' }}>
+                            <button
+                                onClick={() => window.open(supabase.storage.from('photos').getPublicUrl(activePhoto.storage_path).data.publicUrl, '_blank')}
+                                style={{ height: '36px', padding: '0 12px', background: 'rgba(255,255,255,0.1)', color: 'white', border: 'none', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 600, backdropFilter: 'blur(8px)' }}
+                            >
+                                <ExternalLink size={14} style={{ marginRight: '6px' }} /> Full Res
+                            </button>
                         </div>
                     </div>
 
-                    {/* Sidebar */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', overflowY: 'auto', paddingRight: '1rem' }}>
-                        <div>
-                            <h3 style={{ fontSize: '0.9rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', marginBottom: '1rem' }}>Gallery ({session.photos?.length})</h3>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
-                                {session.photos?.map((photo, i) => (
-                                    <div
-                                        key={photo.id}
-                                        onClick={() => setActivePhoto(photo)}
-                                        style={{
-                                            aspectRatio: '1',
-                                            borderRadius: '12px',
-                                            overflow: 'hidden',
-                                            cursor: 'pointer',
-                                            border: activePhoto?.id === photo.id ? '3px solid #3b82f6' : '3px solid transparent',
-                                            transition: 'all 0.2s'
-                                        }}
-                                    >
-                                        <img src={supabase.storage.from('photos').getPublicUrl(photo.storage_path).data.publicUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Thumb" />
+                    {/* Meta Panel */}
+                    <div style={{ width: '380px', borderLeft: '1px solid var(--slate-200)', display: 'flex', flexDirection: 'column', background: 'var(--slate-50)' }}>
+                        <div style={{ padding: '24px', flex: 1, overflowY: 'auto' }}>
+                            <section style={{ marginBottom: '32px' }}>
+                                <h3 style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--slate-400)', textTransform: 'uppercase', marginBottom: '12px', letterSpacing: '0.05em' }}>Visual Evidence</h3>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+                                    {session.photos?.map((photo) => (
+                                        <div
+                                            key={photo.id}
+                                            onClick={() => setActivePhoto(photo)}
+                                            style={{
+                                                aspectRatio: '1', borderRadius: '8px', overflow: 'hidden', cursor: 'pointer',
+                                                border: activePhoto?.id === photo.id ? '2px solid var(--primary)' : '2px solid transparent',
+                                                transition: 'transform 150ms'
+                                            }}
+                                        >
+                                            <img src={supabase.storage.from('photos').getPublicUrl(photo.storage_path).data.publicUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Thumb" />
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+
+                            <section style={{ marginBottom: '32px' }}>
+                                <h3 style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--slate-400)', textTransform: 'uppercase', marginBottom: '12px', letterSpacing: '0.05em' }}>Telemetry</h3>
+                                <div className="card" style={{ padding: '16px', background: 'white' }}>
+                                    <div style={{ fontSize: '0.8rem', color: 'var(--slate-500)', marginBottom: '4px' }}>GPS Signal</div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 700, color: 'var(--slate-900)', fontSize: '0.9rem' }}>
+                                        <MapPin size={14} color="var(--primary)" />
+                                        {session.gps_lat ? `${session.gps_lat.toFixed(4)}, ${session.gps_lng.toFixed(4)}` : 'Manual Entry (No GPS)'}
                                     </div>
-                                ))}
-                            </div>
+                                    {session.gps_lat && (
+                                        <a href={`https://www.google.com/maps?q=${session.gps_lat},${session.gps_lng}`} target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', color: 'var(--primary)', marginTop: '8px', display: 'block', textDecoration: 'none', fontWeight: 600 }}>
+                                            View Mapping Console →
+                                        </a>
+                                    )}
+                                </div>
+                            </section>
+
+                            <section>
+                                <h3 style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--slate-400)', textTransform: 'uppercase', marginBottom: '12px', letterSpacing: '0.05em' }}>Inspector Remarks</h3>
+                                <div className="card" style={{ padding: '16px', background: 'white', minHeight: '100px' }}>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--slate-600)', lineHeight: '1.5' }}>
+                                        {session.comments || 'No session comments recorded.'}
+                                    </p>
+                                </div>
+                            </section>
                         </div>
 
-                        <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '20px', padding: '1.5rem', border: '1px solid rgba(255,255,255,0.1)' }}>
-                            <h3 style={{ fontSize: '0.85rem', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <MapPin size={16} /> Location Data
-                            </h3>
-                            <div style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.5rem' }}>
-                                {session.gps_lat ? `${session.gps_lat}, ${session.gps_lng}` : 'Coordinates Unavailable'}
-                            </div>
-                            {session.gps_lat && (
-                                <a
-                                    href={`https://www.google.com/maps?q=${session.gps_lat},${session.gps_lng}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    style={{ fontSize: '0.85rem', color: '#3b82f6', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}
-                                >
-                                    View on Satellite Map <ExternalLink size={14} />
-                                </a>
-                            )}
-                        </div>
-
-                        <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '20px', padding: '1.5rem', border: '1px solid rgba(255,255,255,0.1)' }}>
-                            <h3 style={{ fontSize: '0.85rem', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', marginBottom: '1rem' }}>Session Remarks</h3>
-                            <p style={{ fontSize: '0.95rem', lineHeight: '1.6', color: '#e2e8f0' }}>
-                                {session.comments || 'No remarks provided by inspector.'}
-                            </p>
+                        {/* Actions Footer */}
+                        <div style={{ padding: '24px', borderTop: '1px solid var(--slate-200)', background: 'white' }}>
+                            <button style={{ width: '100%', height: '44px', background: 'var(--primary)', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 700, cursor: 'pointer', marginBottom: '12px' }}>
+                                APPROVE SUBMISSION
+                            </button>
+                            <button
+                                onClick={() => downloadCSV([session], `record-${session.chassis_id}`)}
+                                style={{ width: '100%', height: '44px', border: '1px solid var(--slate-200)', background: 'white', color: 'var(--slate-600)', borderRadius: '10px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                            >
+                                <Download size={16} style={{ marginRight: '8px' }} /> EXPORT BUNDLE
+                            </button>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 };
 
@@ -191,45 +203,47 @@ const Records = () => {
 
     return (
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-            <header style={{ marginBottom: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                 <div>
-                    <h1 style={{ fontSize: '2.25rem', fontWeight: 900, color: '#0f172a', letterSpacing: '-1.2px' }}>Data Explorer</h1>
-                    <p style={{ color: '#64748b', fontWeight: 500 }}>Global archive for trailer assembly logs and visual verification.</p>
+                    <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--slate-900)', letterSpacing: '-0.025em' }}>
+                        Audit Explorer
+                    </h1>
+                    <p style={{ color: 'var(--slate-500)', fontWeight: 500, fontSize: '0.9rem' }}>Comprehensive archive of all trailer assembly verifications.</p>
                 </div>
-                <div style={{ display: 'flex', background: 'white', padding: '4px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                <div style={{ display: 'flex', background: 'var(--slate-100)', padding: '4px', borderRadius: '10px' }}>
                     <button
                         onClick={() => setViewMode('table')}
-                        style={{ padding: '8px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: viewMode === 'table' ? '#f1f5f9' : 'transparent', color: viewMode === 'table' ? '#1d4ed8' : '#64748b' }}
+                        style={{ height: '36px', padding: '0 12px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: viewMode === 'table' ? 'white' : 'transparent', color: viewMode === 'table' ? 'var(--primary)' : 'var(--slate-500)', boxShadow: viewMode === 'table' ? 'var(--shadow-sm)' : 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}
                     >
-                        <TableIcon size={20} />
+                        <TableIcon size={16} /> Table
                     </button>
                     <button
                         onClick={() => setViewMode('grid')}
-                        style={{ padding: '8px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: viewMode === 'grid' ? '#f1f5f9' : 'transparent', color: viewMode === 'grid' ? '#1d4ed8' : '#64748b' }}
+                        style={{ height: '36px', padding: '0 12px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: viewMode === 'grid' ? 'white' : 'transparent', color: viewMode === 'grid' ? 'var(--primary)' : 'var(--slate-500)', boxShadow: viewMode === 'grid' ? 'var(--shadow-sm)' : 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}
                     >
-                        <LayoutGrid size={20} />
+                        <LayoutGrid size={16} /> Grid
                     </button>
                 </div>
-            </header>
+            </div>
 
-            {/* Advanced Filters */}
-            <div style={{ background: 'white', padding: '1.25rem', borderRadius: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f1f5f9', marginBottom: '2rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            {/* Filter Bar */}
+            <div className="card" style={{ padding: '16px', marginBottom: '24px', display: 'flex', gap: '16px', alignItems: 'center' }}>
                 <div style={{ position: 'relative', flex: 1 }}>
-                    <Search size={20} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                    <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--slate-400)' }} />
                     <input
                         type="text"
-                        placeholder="Search Chassis, Inspector or Origin..."
+                        placeholder="Search by Chassis ID, Inspector..."
                         value={search}
                         onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-                        style={{ width: '100%', padding: '0.85rem 1rem 0.85rem 3.5rem', borderRadius: '14px', border: '1px solid #e2e8f0', background: '#f8fafc', fontSize: '0.95rem', outline: 'none' }}
+                        style={{ width: '100%', height: '44px', padding: '0 12px 0 40px', borderRadius: '10px', border: '1px solid var(--slate-200)', background: 'var(--slate-50)', fontSize: '0.9rem', outline: 'none' }}
                     />
                 </div>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                    {['All', 'Approved', 'Pending', 'Flagged'].map(t => (
+                <div style={{ display: 'flex', gap: '6px', background: 'var(--slate-50)', padding: '4px', borderRadius: '10px', border: '1px solid var(--slate-200)' }}>
+                    {['All', 'Priority', 'Recent'].map(t => (
                         <button
                             key={t}
                             onClick={() => setFilter(t)}
-                            style={{ padding: '8px 16px', borderRadius: '100px', border: 'none', fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', background: filter === t ? '#1d4ed8' : '#f1f5f9', color: filter === t ? 'white' : '#64748b' }}
+                            style={{ height: '32px', padding: '0 12px', borderRadius: '6px', border: 'none', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', background: filter === t ? 'white' : 'transparent', color: filter === t ? 'var(--slate-900)' : 'var(--slate-400)', boxShadow: filter === t ? 'var(--shadow-sm)' : 'none' }}
                         >
                             {t.toUpperCase()}
                         </button>
@@ -244,12 +258,20 @@ const Records = () => {
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         exit={{ y: 20, opacity: 0 }}
-                        style={{ position: 'sticky', top: '100px', zIndex: 10, background: '#0f172a', padding: '1rem 2rem', borderRadius: '20px', color: 'white', display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '2rem', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.2)' }}
+                        style={{ position: 'sticky', top: '100px', zIndex: 10, background: 'var(--slate-950)', padding: '1rem 2rem', borderRadius: '20px', color: 'white', display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '2rem', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.2)' }}
                     >
                         <div style={{ fontWeight: 800, fontSize: '0.9rem' }}>{selectedIds.length} RECORDS SELECTED</div>
                         <div style={{ flex: 1, display: 'flex', gap: '12px' }}>
-                            <button onClick={handleBulkArchive} style={{ background: '#3b82f6', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}>Approve Batch</button>
-                            <button style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}>Export CSV</button>
+                            <button onClick={handleBulkArchive} style={{ background: 'var(--primary)', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}>Approve Batch</button>
+                            <button
+                                onClick={async () => {
+                                    const { data } = await supabase.from('sessions').select('*').in('id', selectedIds);
+                                    if (data) downloadCSV(data, 'bulk-export');
+                                }}
+                                style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}
+                            >
+                                Export CSV
+                            </button>
                         </div>
                         <button onClick={() => setSelectedIds([])} style={{ color: '#94a3b8', background: 'none', border: 'none', fontWeight: 700, cursor: 'pointer' }}>Deselect All</button>
                     </motion.div>
@@ -258,73 +280,68 @@ const Records = () => {
 
             {/* Records Table */}
             {viewMode === 'table' ? (
-                <div style={{ background: 'white', borderRadius: '24px', overflow: 'hidden', border: '1px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' }}>
+                <div className="card" style={{ overflow: 'hidden' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                        <thead style={{ background: '#f8fafc' }}>
-                            <tr>
-                                <th style={{ padding: '1rem', width: '40px' }}></th>
-                                <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.75rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase' }}>Log Entry</th>
-                                <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.75rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase' }}>Dispatcher</th>
-                                <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.75rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase' }}>Evidence</th>
-                                <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.75rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase' }}>Status</th>
-                                <th style={{ textAlign: 'right', padding: '1rem', fontSize: '0.75rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase' }}>Actions</th>
+                        <thead>
+                            <tr style={{ background: 'var(--slate-50)', borderBottom: '1px solid var(--slate-200)' }}>
+                                <th style={{ width: '40px', padding: '12px 16px' }}>
+                                    <input type="checkbox" onChange={(e) => {
+                                        if (e.target.checked) setSelectedIds(sessions.map(s => s.id));
+                                        else setSelectedIds([]);
+                                    }} style={{ width: '16px', height: '16px', borderRadius: '4px' }} />
+                                </th>
+                                <th style={{ textAlign: 'left', padding: '12px 16px', fontSize: '0.7rem', fontWeight: 800, color: 'var(--slate-500)', textTransform: 'uppercase' }}>Session ID / Date</th>
+                                <th style={{ textAlign: 'left', padding: '12px 16px', fontSize: '0.7rem', fontWeight: 800, color: 'var(--slate-500)', textTransform: 'uppercase' }}>Auditor</th>
+                                <th style={{ textAlign: 'left', padding: '12px 16px', fontSize: '0.7rem', fontWeight: 800, color: 'var(--slate-500)', textTransform: 'uppercase' }}>Visual Evidence</th>
+                                <th style={{ textAlign: 'left', padding: '12px 16px', fontSize: '0.7rem', fontWeight: 800, color: 'var(--slate-500)', textTransform: 'uppercase' }}>Signal Status</th>
+                                <th style={{ textAlign: 'right', padding: '12px 16px', fontSize: '0.7rem', fontWeight: 800, color: 'var(--slate-500)', textTransform: 'uppercase' }}>Tools</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody style={{ fontSize: '0.85rem' }}>
                             {loading ? (
-                                <tr><td colSpan="6" style={{ textAlign: 'center', padding: '4rem' }}><Clock className="animate-spin" /></td></tr>
+                                <tr><td colSpan="6" style={{ textAlign: 'center', padding: '48px', color: 'var(--slate-400)' }}><Clock className="animate-spin" size={24} /></td></tr>
                             ) : sessions.map(session => (
-                                <tr key={session.id} style={{ borderTop: '1px solid #f1f5f9', transition: 'background 0.2s' }}>
-                                    <td style={{ padding: '1rem' }}>
-                                        <input type="checkbox" checked={selectedIds.includes(session.id)} onChange={() => toggleSelect(session.id)} style={{ width: '18px', height: '18px', borderRadius: '4px' }} />
+                                <tr key={session.id} style={{ borderBottom: '1px solid var(--slate-100)', transition: 'background 150ms' }} className="hover-row">
+                                    <td style={{ padding: '12px 16px' }}>
+                                        <input type="checkbox" checked={selectedIds.includes(session.id)} onChange={() => toggleSelect(session.id)} style={{ width: '16px', height: '16px', borderRadius: '4px' }} />
                                     </td>
-                                    <td style={{ padding: '1rem' }}>
-                                        <div style={{ fontWeight: 800, color: '#0f172a' }}>Chassis #{session.chassis_id}</div>
-                                        <div style={{ fontSize: '0.75rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                            <Calendar size={12} /> {format(new Date(session.end_time), 'MMM d, HH:mm')}
-                                        </div>
+                                    <td style={{ padding: '12px 16px' }}>
+                                        <div style={{ fontWeight: 700, color: 'var(--slate-900)' }}>CH-{session.chassis_id}</div>
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--slate-400)' }}>{format(new Date(session.end_time), 'MMM d, HH:mm')}</div>
                                     </td>
-                                    <td style={{ padding: '1rem' }}>
+                                    <td style={{ padding: '12px 16px' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <div style={{ width: '32px', height: '32px', background: '#e2e8f0', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800 }}>
+                                            <div style={{ width: '28px', height: '28px', background: 'var(--slate-200)', borderRadius: '50%', border: '2px solid white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: 800, color: 'var(--slate-600)' }}>
                                                 {session.driver_name?.substring(0, 2).toUpperCase()}
                                             </div>
-                                            <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{session.driver_name}</span>
+                                            <span style={{ fontWeight: 600, color: 'var(--slate-700)' }}>{session.driver_name}</span>
                                         </div>
                                     </td>
-                                    <td style={{ padding: '1rem' }}>
+                                    <td style={{ padding: '12px 16px' }}>
                                         <div style={{ display: 'flex', gap: '4px' }}>
                                             {session.photos?.slice(0, 3).map(p => (
-                                                <div key={p.id} style={{ width: '32px', height: '32px', borderRadius: '6px', overflow: 'hidden', background: '#f1f5f9' }}>
-                                                    <img
-                                                        src={supabase.storage.from('photos').getPublicUrl(p.storage_path).data.publicUrl}
-                                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                                        onError={(e) => {
-                                                            e.target.onerror = null;
-                                                            e.target.style.display = 'none';
-                                                            e.target.parentNode.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%"><X size={12} color="#94a3b8"/></div>';
-                                                        }}
-                                                    />
+                                                <div key={p.id} style={{ width: '32px', height: '32px', borderRadius: '6px', overflow: 'hidden', background: 'var(--slate-100)', border: '1px solid var(--slate-200)' }}>
+                                                    <img src={supabase.storage.from('photos').getPublicUrl(p.storage_path).data.publicUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                                 </div>
                                             ))}
                                             {session.photos?.length > 3 && (
-                                                <div style={{ width: '32px', height: '32px', borderRadius: '6px', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 700, color: '#94a3b8' }}>
+                                                <div style={{ width: '32px', height: '32px', borderRadius: '6px', background: 'var(--slate-50)', border: '1px solid var(--slate-200)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: 800, color: 'var(--slate-400)' }}>
                                                     +{session.photos.length - 3}
                                                 </div>
                                             )}
                                         </div>
                                     </td>
-                                    <td style={{ padding: '1rem' }}>
-                                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '100px', background: '#ecfdf5', color: '#10b981', fontSize: '0.75rem', fontWeight: 800 }}>
-                                            <CheckCircle2 size={12} /> VERIFIED
+                                    <td style={{ padding: '12px 16px' }}>
+                                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 8px', borderRadius: '6px', background: 'var(--success-bg)', color: 'var(--success)', fontSize: '0.7rem', fontWeight: 800 }}>
+                                            <div style={{ width: '5px', height: '5px', background: 'currentColor', borderRadius: '50%' }} /> VERIFIED
                                         </div>
                                     </td>
-                                    <td style={{ padding: '1rem', textAlign: 'right' }}>
+                                    <td style={{ padding: '12px 16px', textAlign: 'right' }}>
                                         <button
                                             onClick={() => setSelectedSession(session)}
-                                            style={{ padding: '8px 16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', fontSize: '0.8rem', fontWeight: 700, color: '#1d4ed8', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', marginLeft: 'auto' }}
+                                            style={{ height: '32px', padding: '0 12px', background: 'var(--slate-100)', border: 'none', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 700, color: 'var(--slate-600)', cursor: 'pointer' }}
                                         >
-                                            <Eye size={14} /> AUDIT
+                                            View Logs
                                         </button>
                                     </td>
                                 </tr>
@@ -335,7 +352,7 @@ const Records = () => {
             ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
                     {sessions.map(session => (
-                        <div key={session.id} style={{ background: 'white', borderRadius: '24px', overflow: 'hidden', border: '1px solid #f1f5f9', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+                        <div key={session.id} className="card" style={{ overflow: 'hidden', padding: 0 }}>
                             <div style={{ height: '180px', position: 'relative' }}>
                                 <img
                                     src={session.photos?.[0] ? supabase.storage.from('photos').getPublicUrl(session.photos[0].storage_path).data.publicUrl : ''}
@@ -355,7 +372,7 @@ const Records = () => {
                                 <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '1rem' }}>{session.driver_name} • {format(new Date(session.end_time), 'MMM d')}</p>
                                 <button
                                     onClick={() => setSelectedSession(session)}
-                                    style={{ width: '100%', padding: '10px', background: '#0f172a', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 700, cursor: 'pointer' }}
+                                    style={{ width: '100%', padding: '10px', background: 'var(--slate-950)', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 700, cursor: 'pointer' }}
                                 >
                                     View Record
                                 </button>

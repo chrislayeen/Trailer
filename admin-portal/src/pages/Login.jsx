@@ -59,94 +59,44 @@ const Login = () => {
     };
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%)',
-            padding: '20px'
-        }}>
-            <div style={{
-                width: '100%',
-                maxWidth: '400px',
-                background: 'white',
-                padding: '2.5rem',
-                borderRadius: '24px',
-                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-                position: 'relative'
-            }}>
-                {/* Connection Indicator */}
-                <div style={{ position: 'absolute', top: '1rem', right: '1.5rem', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.7rem' }}>
-                    <div style={{
-                        width: '8px', height: '8px', borderRadius: '50%',
-                        backgroundColor: dbStatus === 'connected' ? '#10b981' : dbStatus === 'error' ? '#ef4444' : '#94a3b8'
-                    }}></div>
-                    <span style={{ color: '#64748b' }}>DB: {dbStatus.toUpperCase()}</span>
-                </div>
-                <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                    <div style={{
-                        display: 'inline-flex',
-                        padding: '12px',
-                        background: '#dbeafe',
-                        borderRadius: '16px',
-                        color: '#1d4ed8',
-                        marginBottom: '1rem'
-                    }}>
-                        <Bot size={40} />
+        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyCenter: 'center', background: 'var(--slate-50)', padding: '32px' }}>
+            <div className="card" style={{ width: '100%', maxWidth: '420px', padding: '40px', margin: '0 auto' }}>
+                <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+                    <div style={{ display: 'inline-flex', padding: '12px', background: 'var(--slate-100)', borderRadius: '12px', color: 'var(--primary)', marginBottom: '16px' }}>
+                        <Bot size={32} />
                     </div>
-                    <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>Admin Portal</h1>
-                    <p style={{ color: '#64748b', fontSize: '0.95rem' }}>Logistics Corp • Trailer Assembly</p>
+                    <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--slate-900)', letterSpacing: '-0.025em' }}>Logistics Console</h1>
+                    <p style={{ color: 'var(--slate-500)', fontSize: '0.9rem', marginTop: '4px' }}>Administrative Access Terminal</p>
                 </div>
 
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     <div>
-                        <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#475569', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                            Admin Name
-                        </label>
+                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: 'var(--slate-500)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Identity</label>
                         <div style={{ position: 'relative' }}>
-                            <User size={20} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                            <User size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--slate-400)' }} />
                             <input
                                 type="text"
-                                placeholder="Enter name"
+                                placeholder="Admin Name"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 required
-                                style={{
-                                    width: '100%',
-                                    padding: '12px 16px 12px 48px',
-                                    borderRadius: '12px',
-                                    border: '1px solid #e2e8f0',
-                                    fontSize: '1rem',
-                                    outline: 'none',
-                                    transition: 'border-color 0.2s'
-                                }}
+                                style={{ width: '100%', height: '44px', padding: '0 12px 0 40px', borderRadius: '10px', border: '1px solid var(--slate-200)', background: 'var(--slate-50)', fontSize: '0.9rem', outline: 'none' }}
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#475569', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                            Access PIN
-                        </label>
+                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: 'var(--slate-500)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Access PIN</label>
                         <div style={{ position: 'relative' }}>
-                            <Lock size={20} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                            <Lock size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--slate-400)' }} />
                             <input
                                 type="password"
-                                placeholder="Enter 6-digit PIN"
+                                placeholder="••••••"
                                 value={pin}
                                 onChange={(e) => setPin(e.target.value)}
                                 required
                                 maxLength={6}
-                                style={{
-                                    width: '100%',
-                                    padding: '12px 16px 12px 48px',
-                                    borderRadius: '12px',
-                                    border: '1px solid #e2e8f0',
-                                    fontSize: '1rem',
-                                    outline: 'none',
-                                    transition: 'border-color 0.2s'
-                                }}
+                                style={{ width: '100%', height: '44px', padding: '0 12px 0 40px', borderRadius: '10px', border: '1px solid var(--slate-200)', background: 'var(--slate-50)', fontSize: '0.9rem', outline: 'none' }}
                             />
                         </div>
                     </div>
@@ -154,35 +104,15 @@ const Login = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        style={{
-                            width: '100%',
-                            padding: '14px',
-                            background: '#1d4ed8',
-                            color: 'white',
-                            borderRadius: '12px',
-                            fontSize: '1rem',
-                            fontWeight: 700,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '10px',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s',
-                            marginTop: '0.5rem'
-                        }}
+                        style={{ width: '100%', height: '48px', background: 'var(--primary)', color: 'white', borderRadius: '10px', fontSize: '0.9rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginTop: '12px', border: 'none' }}
                     >
-                        {loading ? 'Authenticating...' : (
-                            <>
-                                Login to Dashboard <LogIn size={20} />
-                            </>
-                        )}
+                        {loading ? 'Verifying...' : 'Sign In to Console'}
                     </button>
                 </form>
 
-                <div style={{ marginTop: '2rem', textAlign: 'center' }}>
-                    <p style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
-                        Restricted access for authorized logistics managers only.
-                    </p>
+                <div style={{ marginTop: '32px', textAlign: 'center', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
+                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: dbStatus === 'connected' ? 'var(--success)' : 'var(--error)' }} />
+                    <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--slate-400)', textTransform: 'uppercase' }}>Database: {dbStatus}</span>
                 </div>
             </div>
         </div>

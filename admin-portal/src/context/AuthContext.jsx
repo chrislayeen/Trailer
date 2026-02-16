@@ -21,41 +21,32 @@ export const AuthProvider = ({ children }) => {
     const login = async (name, pin) => {
         try {
             console.log('--- ADMIN LOGIN AUDIT ---');
-            console.log('Payload:', { name, pin, pinType: typeof pin });
+            console.log('Payload:', { name, pin });
 
+            // Security Hardening: Validating against DB via Secure RPC.
             const { data, error } = await supabase
-                .from('users')
-                .select('*')
-                .ilike('name', name) // Case-insensitive name match
-                .eq('pin', pin)      // Match exactly as stored (text)
-                .eq('role', 'admin') // Case-sensitive strict role match
+                .rpc('verify_user_credentials', {
+                    p_name: name,
+                    p_pin: pin,
+                    p_role: 'admin'
+                })
                 .maybeSingle();
 
-            console.log('Query Result:', { data, error });
+            if (error) throw new Error(`Database error: ${error.message}`);
+            if (!data) throw new Error('Invalid credentials or unauthorized access');
 
-            if (error) {
-                console.error('Supabase Query Failure:', {
-                    code: error.code,
-                    message: error.message,
-                    hint: error.hint
-                });
-                throw new Error(`Database error: ${error.message}`);
-            }
+            // Map the RPC response aliases back to our internal structure
+            const adminData = {
+                id: data.user_id,
+                name: data.user_name,
+                role: data.user_role
+            };
 
-            if (!data) {
-                console.warn('Audit Result: ACCESS DENIED. Reason: Record not found in public.users where name matches, pin matches, and role=\'admin\'.');
-                console.log('RLS Check: If Test 2 in Login.jsx was SUCCESS but this returns null, ensure your Admin user exists and RLS allows SELECT.');
-                throw new Error('Invalid credentials or unauthorized access');
-            }
-
-            console.log('Audit Result: ACCESS GRANTED for user:', data.name);
-            console.log('-------------------------');
-
-            setAdmin(data);
-            localStorage.setItem('admin_session', JSON.stringify(data));
-            return data;
+            setAdmin(adminData);
+            localStorage.setItem('admin_session', JSON.stringify(adminData));
+            return adminData;
         } catch (err) {
-            console.error('Audit Conclusion: Login process terminated unexpectedly.', err.message);
+            console.error('Audit Conclusion: Login failed.', err.message);
             throw err;
         }
     };

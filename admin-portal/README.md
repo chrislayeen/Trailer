@@ -1,16 +1,20 @@
-# React + Vite
+# Logistics Admin Console
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Standalone administrative terminal for the Logistics Suite.
 
-Currently, two official plugins are available:
+## Deployment Information
+This portal is designed to be deployed independently from the main User Portal.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Build and Deploy
+To prepare the production build:
+1. Navigate to the `admin-portal` directory.
+2. Run `npm run build`.
+3. Deploy the resulting `dist/` folder to your chosen host (e.g., Vercel, Netlify, or Static Hosting).
 
-## React Compiler
+## Local Development
+Run `npm install` and then `npm run dev`.
+By default, this console runs on **port 5174** to avoid conflicts with the User Portal (port 5173).
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Identity
+- **Name:** logistics-admin-console
+- **Document Title:** Logistics | Admin Console
