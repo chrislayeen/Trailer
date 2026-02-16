@@ -19,9 +19,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 
-const QuickPhotoModal = ({ photo, session, onClose }) => {
-    if (!photo) return null;
-    const url = supabase.storage.from('photos').getPublicUrl(photo.storage_path).data.publicUrl;
+const QuickPhotoModal = ({ photo: initialPhoto, session, onClose }) => {
+    const [activePhoto, setActivePhoto] = useState(initialPhoto || (session?.photos?.[0]));
+
+    if (!activePhoto) return null;
+    const url = supabase.storage.from('photos').getPublicUrl(activePhoto.storage_path).data.publicUrl;
 
     const handleDownload = async () => {
         try {
@@ -60,7 +62,38 @@ const QuickPhotoModal = ({ photo, session, onClose }) => {
                     </button>
                 </div>
                 <div style={{ background: 'var(--slate-900)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <img src={url} style={{ maxWidth: '100%', maxHeight: '55vh', display: 'block', objectFit: 'contain' }} alt="Preview" />
+                    <div style={{ position: 'relative', width: '100%', display: 'flex', justifyContent: 'center' }}>
+                        <img src={url} style={{ maxWidth: '100%', maxHeight: '50vh', display: 'block', objectFit: 'contain' }} alt="Preview" />
+                    </div>
+
+                    {/* Thumbnail Strip */}
+                    {session.photos && session.photos.length > 1 && (
+                        <div style={{
+                            width: '100%',
+                            padding: '12px 24px',
+                            display: 'flex',
+                            gap: '8px',
+                            background: 'rgba(0,0,0,0.2)',
+                            overflowX: 'auto',
+                            justifyContent: 'center'
+                        }}>
+                            {session.photos.map((p) => (
+                                <div
+                                    key={p.id}
+                                    onClick={() => setActivePhoto(p)}
+                                    style={{
+                                        width: '48px', height: '48px', borderRadius: '6px', overflow: 'hidden', cursor: 'pointer',
+                                        border: activePhoto.id === p.id ? '2px solid white' : '2px solid transparent',
+                                        transition: 'all 150ms',
+                                        opacity: activePhoto.id === p.id ? 1 : 0.6
+                                    }}
+                                >
+                                    <img src={supabase.storage.from('photos').getPublicUrl(p.storage_path).data.publicUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Thumb" />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
                     {session.comments && (
                         <div style={{
                             width: '100%',
