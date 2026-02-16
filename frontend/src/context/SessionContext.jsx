@@ -103,6 +103,8 @@ export const SessionProvider = ({ children }) => {
         photos: [], // Photos will be fetched/added separately
         location_verified: false, // Local state
         location_type: null,
+        gps_lat: null,
+        gps_lng: null,
         comments: ''
       });
 
@@ -128,6 +130,10 @@ export const SessionProvider = ({ children }) => {
 
   const updateSessionComment = useCallback((comment) => {
     setCurrentSession(prev => prev ? ({ ...prev, comments: comment }) : null);
+  }, []);
+
+  const updateSessionCoords = useCallback((lat, lng) => {
+    setCurrentSession(prev => prev ? ({ ...prev, gps_lat: parseFloat(lat), gps_lng: parseFloat(lng) }) : null);
   }, []);
 
   const addPhoto = useCallback(async (photoDataUrl) => {
@@ -158,6 +164,8 @@ export const SessionProvider = ({ children }) => {
           session_id: currentSession.id,
           storage_path: filePath,
           photo_type: 'standard',
+          gps_lat: currentSession.gps_lat,
+          gps_lng: currentSession.gps_lng,
           taken_at: new Date().toISOString()
         })
         .select()
@@ -215,8 +223,8 @@ export const SessionProvider = ({ children }) => {
         status: 'uploaded',
         end_time: new Date().toISOString(),
         comments: currentSession.comments,
-        gps_lat: currentSession.location_verified ? 0 : null, // Replace with real coords if available
-        gps_lng: currentSession.location_verified ? 0 : null
+        gps_lat: currentSession.gps_lat,
+        gps_lng: currentSession.gps_lng
       };
 
       console.log('--- SESSION SUBMISSION AUDIT ---');
@@ -291,6 +299,7 @@ export const SessionProvider = ({ children }) => {
     startNewSession,
     updateLocationStatus,
     updateSessionComment,
+    updateSessionCoords,
     addPhoto,
     removePhoto,
     submitSession,
@@ -307,6 +316,7 @@ export const SessionProvider = ({ children }) => {
     startNewSession,
     updateLocationStatus,
     updateSessionComment,
+    updateSessionCoords,
     addPhoto,
     removePhoto,
     submitSession,

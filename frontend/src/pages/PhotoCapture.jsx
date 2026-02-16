@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSession } from '../context/SessionContext';
 import { Button, Input } from '../components/UI';
-import { MapPin, Camera, Trash2, Upload, MessageSquare, Image as ImageIcon, ChevronLeft, Map as MapIcon, RotateCcw, Flashlight } from 'lucide-react';
+import { MapPin, Camera, Trash2, Upload, MessageSquare, Image as ImageIcon, ChevronLeft, Map as MapIcon, RotateCcw, Flashlight, X } from 'lucide-react';
 
 import { toast } from 'sonner';
+import { calculateBlurScore, calculateBrightness, applyPostProcessing } from '../utils/imageProcessing';
 
 const PhotoCapture = () => {
     const navigate = useNavigate();
-    const { currentSession, addPhoto, removePhoto, updateLocationStatus, submitSession, updateSessionComment } = useSession();
+    const { currentSession, addPhoto, removePhoto, updateLocationStatus, submitSession, updateSessionComment, updateSessionCoords } = useSession();
     const { t } = useTranslation();
     const [cameraOpen, setCameraOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -17,8 +18,14 @@ const PhotoCapture = () => {
     const [manualMode, setManualMode] = useState(false);
     const [torchEnabled, setTorchEnabled] = useState(false);
     const [hasTorch, setHasTorch] = useState(false);
+    const [qualityStatus, setQualityStatus] = useState({ blur: 0, brightness: 0, stable: true });
+    const [exposure, setExposure] = useState(0);
+    const [capturing, setCapturing] = useState(false);
+
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
+    const streamRef = useRef(null);
+    const imageCaptureRef = useRef(null);
 
     // Geolocation Effect
     useEffect(() => {
@@ -32,6 +39,7 @@ const PhotoCapture = () => {
                             lat: position.coords.latitude.toFixed(4),
                             lng: position.coords.longitude.toFixed(4)
                         });
+                        updateSessionCoords(position.coords.latitude, position.coords.longitude);
                         updateLocationStatus(true, 'gps');
                     }
                 },
@@ -53,90 +61,64 @@ const PhotoCapture = () => {
     }, [manualMode, updateLocationStatus]);
 
     const handleManualCoordChange = (field, value) => {
-        setCoords(prev => ({ ...prev, [field]: value }));
+        const newCoords = { ...coords, [field]: value };
+        setCoords(newCoords);
+        updateSessionCoords(newCoords.lat, newCoords.lng);
         updateLocationStatus(true, 'manual');
     };
 
-    // Camera Functions
-    const startCamera = async () => {
+    const handleNativeCapture = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setCapturing(true);
         try {
-            setCameraOpen(true);
-            // Small delay to ensure DOM is ready if conditionally rendered, 
-            // though React state update should handle it. 
-            // We'll wait for the next tick to stick the stream.
-            setTimeout(async () => {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                    if (videoRef.current) {
-                        videoRef.current.srcObject = stream;
-
-                        // Check Torch
-                        const track = stream.getVideoTracks()[0];
-                        if (track) {
-                            const capabilities = track.getCapabilities();
-                            if (capabilities.torch) {
-                                setHasTorch(true);
-                            }
-                        }
-                    }
-                } catch (innerErr) {
-                    console.error("Camera stream error:", innerErr);
-                    toast.error(t('scan.camera_perm_denied'));
-                    setCameraOpen(false);
-                }
-            }, 100);
-        } catch (err) {
-            console.error("Error accessing camera:", err);
-            toast.error(t('scan.camera_start_error'));
-            setCameraOpen(false);
-        }
-    };
-
-    const stopCamera = () => {
-        if (videoRef.current && videoRef.current.srcObject) {
-            const tracks = videoRef.current.srcObject.getTracks();
-            tracks.forEach(track => track.stop());
-            videoRef.current.srcObject = null;
-        }
-        setCameraOpen(false);
-        setTorchEnabled(false);
-        setHasTorch(false);
-    };
-
-    const toggleTorch = () => {
-        if (videoRef.current && videoRef.current.srcObject) {
-            const track = videoRef.current.srcObject.getVideoTracks()[0];
-            if (track) {
-                track.applyConstraints({
-                    advanced: [{ torch: !torchEnabled }]
-                }).then(() => {
-                    setTorchEnabled(!torchEnabled);
-                }).catch(err => console.error("Torch toggle failed", err));
-            }
-        }
-    };
-
-    const capturePhoto = () => {
-        if (videoRef.current && canvasRef.current) {
-            const video = videoRef.current;
+            // 1. Create bitmap from original file
+            const bitmap = await createImageBitmap(file);
             const canvas = canvasRef.current;
             const context = canvas.getContext('2d');
 
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            canvas.width = bitmap.width;
+            canvas.height = bitmap.height;
+            context.drawImage(bitmap, 0, 0);
 
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+            // 2. Smart QC Analysis (on high-res data)
+            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            const blurScore = calculateBlurScore(imageData);
+            const brightness = calculateBrightness(imageData);
 
-            // Async upload
-            const uploadPromise = addPhoto(dataUrl);
+            // Thresholds
+            if (blurScore < 40) {
+                toast.error("Image not sharp enough. Please retake with steady hands.", { position: 'top-center' });
+                return;
+            }
+            if (brightness < 20) {
+                toast.error("Image is too dark. Please use native flash or better light.", { position: 'top-center' });
+                return;
+            }
 
-            // Haptic feedback if available
-            if (navigator.vibrate) navigator.vibrate(50);
+            // 3. Pro Post-Processing
+            applyPostProcessing(context, canvas.width, canvas.height);
 
-            // Context handles success toast
-            stopCamera();
+            // 4. High-Quality Export
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.98);
+
+            await addPhoto(dataUrl);
+            setCameraOpen(false);
+            toast.success("Native Capture Verified");
+
+        } catch (err) {
+            console.error("Native capture processing error:", err);
+            toast.error("Failed to process native photo.");
+        } finally {
+            setCapturing(false);
+            if (fileInputRef.current) fileInputRef.current.value = '';
         }
+    };
+
+    const triggerNativeCamera = () => {
+        setCameraOpen(true);
+        if (fileInputRef.current) fileInputRef.current.click();
     };
 
     const handleSubmit = async () => {
@@ -198,24 +180,6 @@ const PhotoCapture = () => {
                 )}
             </div>
 
-            {/* Actions */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
-                <Button variant="primary" fullWidth onClick={() => document.getElementById('file-upload').click()} style={{ background: 'var(--primary)', display: 'flex', gap: '8px' }}>
-                    <ImageIcon size={20} /> {t('session.select_gallery')}
-                </Button>
-                {/* Hidden File Input for Demo */}
-                <input id="file-upload" type="file" style={{ display: 'none' }} onChange={(e) => {
-                    if (e.target.files[0]) {
-                        const reader = new FileReader();
-                        reader.onload = (ev) => addPhoto(ev.target.result);
-                        reader.readAsDataURL(e.target.files[0]);
-                    }
-                }} />
-
-                <Button variant="primary" fullWidth onClick={startCamera} style={{ background: 'var(--color-primary-dark)', display: 'flex', gap: '8px' }}>
-                    <Camera size={20} /> {t('session.capture_images')}
-                </Button>
-            </div>
 
             {/* Comments */}
             <div style={{ marginBottom: '2rem' }}>
@@ -296,8 +260,36 @@ const PhotoCapture = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+                {/* Native Capture Launcher */}
+                <div style={{ padding: '64px 32px', textAlign: 'center', background: 'var(--slate-50)', borderRadius: '20px', border: '2px dashed var(--slate-200)', marginBottom: '24px' }}>
+                    <div style={{ width: '80px', height: '80px', background: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', boxShadow: 'var(--shadow-sm)' }}>
+                        <Camera size={40} color="var(--primary)" />
+                    </div>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--slate-900)' }}>Device-Native Pro Capture</h3>
+                    <p style={{ color: 'var(--slate-500)', fontSize: '0.9rem', maxWidth: '280px', margin: '12px auto 32px', lineHeight: '1.6' }}>
+                        Capture original Full-Sensors JPGs using your <strong>Phone's Native Camera App</strong> for maximum HDR and noise reduction.
+                    </p>
 
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        accept="image/*"
+                        capture="environment"
+                        onChange={handleNativeCapture}
+                        style={{ display: 'none' }}
+                    />
+                    <canvas ref={canvasRef} style={{ display: 'none' }} />
+
+                    <Button
+                        variant="primary"
+                        onClick={triggerNativeCamera}
+                        disabled={capturing}
+                        style={{ padding: '1.25rem 2rem', fontWeight: 800, fontSize: '1rem' }}
+                    >
+                        {capturing ? 'PROCESSING HQ FILE...' : 'LAUNCH SYSTEM CAMERA'}
+                    </Button>
+                </div>
+            </div>
             {/* Submit */}
             <Button
                 fullWidth
@@ -308,77 +300,8 @@ const PhotoCapture = () => {
             >
                 {isSubmitting ? t('session.submitting') : t('session.submit_images')} <ChevronLeft size={20} style={{ transform: 'rotate(180deg)' }} />
             </Button>
-
-
-            {/* Camera Overlay with Grid */}
-            {cameraOpen && (
-                <div style={{ position: 'fixed', inset: 0, background: 'black', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-
-                    {/* Constrained Container for Desktop */}
-                    <div style={{
-                        position: 'relative',
-                        width: '100%',
-                        height: '100%',
-                        maxWidth: '800px', // max-w-3xl approx
-                        maxHeight: '100%',
-                        aspectRatio: '9/16', // Typical mobile aspect ratio, but we can be flexible
-                        display: 'flex',
-                        flexDirection: 'column',
-                        overflow: 'hidden'
-                    }}>
-
-                        <div style={{ position: 'relative', flex: 1, overflow: 'hidden' }}>
-                            <video ref={videoRef} autoPlay playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                            <canvas ref={canvasRef} style={{ display: 'none' }} />
-
-                            {/* Grid Overlay */}
-                            <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gridTemplateRows: '1fr 1fr 1fr' }}>
-                                <div style={{ borderRight: '1px solid rgba(255,255,255,0.3)', borderBottom: '1px solid rgba(255,255,255,0.3)' }}></div>
-                                <div style={{ borderRight: '1px solid rgba(255,255,255,0.3)', borderBottom: '1px solid rgba(255,255,255,0.3)' }}></div>
-                                <div style={{ borderBottom: '1px solid rgba(255,255,255,0.3)' }}></div>
-                                <div style={{ borderRight: '1px solid rgba(255,255,255,0.3)', borderBottom: '1px solid rgba(255,255,255,0.3)' }}></div>
-                                <div style={{ borderRight: '1px solid rgba(255,255,255,0.3)', borderBottom: '1px solid rgba(255,255,255,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <div style={{ width: '8px', height: '8px', background: 'var(--color-primary)', borderRadius: '50%' }}></div>
-                                </div>
-                                <div style={{ borderBottom: '1px solid rgba(255,255,255,0.3)' }}></div>
-                                <div style={{ borderRight: '1px solid rgba(255,255,255,0.3)' }}></div>
-                                <div style={{ borderRight: '1px solid rgba(255,255,255,0.3)' }}></div>
-                                <div></div>
-                            </div>
-
-                            {/* Top Bar */}
-                            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '20px', display: 'flex', justifyContent: 'center', zIndex: 10 }}>
-                                <div style={{ background: 'rgba(0,0,0,0.6)', padding: '8px 16px', borderRadius: '20px', color: 'white', fontSize: '0.8rem', letterSpacing: '1px' }}>
-                                    {t('session.align_grid')}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Controls - Positioned Absolute at Bottom for Desktop Overlay feel, or Relative for Flex flow. 
-                            User asked for "Place below video OR overlay bottom-center".
-                            In this constrained flex column, relative below video is safest for visibility.
-                        */}
-                        <div style={{ padding: '30px', background: 'black', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-                            <button onClick={stopCamera} style={{ background: 'rgba(255,255,255,0.2)', width: '48px', height: '48px', borderRadius: '50%', color: 'white', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                                <RotateCcw size={20} />
-                            </button>
-
-                            <button onClick={capturePhoto} style={{ width: '72px', height: '72px', borderRadius: '50%', background: 'white', border: '4px solid rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                                <div style={{ width: '60px', height: '60px', borderRadius: '50%', border: '2px solid black' }}></div>
-                            </button>
-
-                            <div style={{ width: '48px', display: 'flex', justifyContent: 'center' }}>
-                                {hasTorch && (
-                                    <button onClick={toggleTorch} style={{ background: torchEnabled ? 'white' : 'rgba(255,255,255,0.2)', width: '48px', height: '48px', borderRadius: '50%', color: torchEnabled ? 'black' : 'white', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', cursor: 'pointer' }}>
-                                        <Flashlight size={20} />
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
+        </div >
     );
 };
 
