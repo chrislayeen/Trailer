@@ -33,10 +33,12 @@ const RecordDetailModal = ({ session, onClose }) => {
         <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="modal-backdrop"
+            onClick={onClose}
             style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px' }}
         >
             <motion.div
                 initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
                 style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', position: 'relative', maxWidth: '1100px', width: '100%', height: 'calc(100vh - 64px)', boxShadow: 'var(--shadow-md)', display: 'flex', flexDirection: 'column' }}
             >
                 {/* Modal Header */}
