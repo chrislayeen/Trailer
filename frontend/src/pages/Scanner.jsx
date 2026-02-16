@@ -248,8 +248,8 @@ const Scanner = () => {
             flexDirection: 'column',
             zIndex: 50,
             minHeight: '100vh',
-            height: '100%',
-            overflow: 'hidden' // Prevent scrollbars
+            overflow: showManualInput ? 'auto' : 'hidden', // Allow scroll when keyboard is likely open
+            WebkitOverflowScrolling: 'touch'
         }}>
             {/* Header */}
             <div style={{
@@ -387,7 +387,13 @@ const Scanner = () => {
             </div>
 
             {/* Footer Actions */}
-            <div style={{ padding: '2rem', paddingBottom: '3rem', zIndex: 20, background: '#0f172a' }}>
+            <div style={{
+                padding: '2rem',
+                paddingBottom: showManualInput ? '12rem' : '3.5rem', // Extra space for keyboard
+                zIndex: 20,
+                background: '#0f172a',
+                transition: 'padding-bottom 0.3s'
+            }}>
                 {!showManualInput ? (
                     <button
                         onClick={handleManualEntry}
@@ -419,6 +425,12 @@ const Scanner = () => {
                             value={manualId}
                             onChange={(e) => setManualId(e.target.value)}
                             placeholder={t('scan.manual_placeholder')}
+                            onFocus={(e) => {
+                                // Standard mobile behavior: wait for keyboard, then scroll
+                                setTimeout(() => {
+                                    e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }, 300);
+                            }}
                             style={{
                                 width: '100%',
                                 padding: '1rem',
