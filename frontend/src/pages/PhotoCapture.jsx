@@ -70,51 +70,73 @@ const PhotoCapture = () => {
     };
 
     const handleNativeCapture = async (e) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
+        const files = Array.from(e.target.files || []);
+        if (files.length === 0) return;
 
         setCapturing(true);
+        let processedCount = 0;
+
         try {
-            // 1. Create bitmap from original file
-            const bitmap = await createImageBitmap(file);
-            const canvas = canvasRef.current;
-            const context = canvas.getContext('2d');
+            for (const file of files) {
+                // 1. Create bitmap and calculate optimal scale
+                const bitmap = await createImageBitmap(file);
+                const MAX_DIMENSION = 2560;
+                let width = bitmap.width;
+                let height = bitmap.height;
 
-            canvas.width = bitmap.width;
-            canvas.height = bitmap.height;
-            context.drawImage(bitmap, 0, 0);
+                if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+                    const scale = Math.min(MAX_DIMENSION / width, MAX_DIMENSION / height);
+                    width = Math.floor(width * scale);
+                    height = Math.floor(height * scale);
+                }
 
-            // 2. Smart QC Analysis (on high-res data)
-            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-            const blurScore = calculateBlurScore(imageData);
-            const brightness = calculateBrightness(imageData);
+                const canvas = canvasRef.current;
+                const context = canvas.getContext('2d');
 
-            // Thresholds
-            if (blurScore < 40) {
-                toast.error("Image not sharp enough. Please retake with steady hands.", { position: 'top-center' });
-                return;
+                canvas.width = width;
+                canvas.height = height;
+                context.drawImage(bitmap, 0, 0, width, height);
+
+                // 2. Smart QC Analysis (on optimized resolution)
+                const imageData = context.getImageData(0, 0, width, height);
+                const blurScore = calculateBlurScore(imageData);
+                const brightness = calculateBrightness(imageData);
+
+                // Threshold checks for ALL images
+                if (blurScore < 40) {
+                    toast.error(`Image "${file.name}" not sharp enough.`, { position: 'top-center' });
+                    continue; // Skip this one, but continue with others
+                }
+                if (brightness < 20) {
+                    toast.error(`Image "${file.name}" is too dark.`, { position: 'top-center' });
+                    continue;
+                }
+
+                // 3. Pro Post-Processing
+                applyPostProcessing(context, width, height);
+
+                // 4. High-Efficiency Export (Visually Lossless)
+                let dataUrl = canvas.toDataURL('image/webp', 0.85);
+                if (dataUrl.startsWith('data:image/png')) {
+                    dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                }
+
+                await addPhoto(dataUrl);
+                processedCount++;
             }
-            if (brightness < 20) {
-                toast.error("Image is too dark. Please use native flash or better light.", { position: 'top-center' });
-                return;
+
+            if (processedCount > 0) {
+                toast.success(`Optimized & Verified ${processedCount} images`);
             }
-
-            // 3. Pro Post-Processing
-            applyPostProcessing(context, canvas.width, canvas.height);
-
-            // 4. High-Quality Export
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.98);
-
-            await addPhoto(dataUrl);
             setCameraOpen(false);
-            toast.success("Native Capture Verified");
 
         } catch (err) {
-            console.error("Native capture processing error:", err);
-            toast.error("Failed to process native photo.");
+            console.error("Image processing error:", err);
+            toast.error("Failed to process some photos.");
         } finally {
             setCapturing(false);
             if (fileInputRef.current) fileInputRef.current.value = '';
+            if (galleryInputRef.current) galleryInputRef.current.value = '';
         }
     };
 
