@@ -21,7 +21,7 @@ export const SessionProvider = ({ children }) => {
       setLoading(true);
       const { data, error } = await supabase
         .from('sessions')
-        .select('*, photos(id, storage_path, data)') // Include 'data' if available or just rely on storage_path
+        .select('*, photos(id, storage_path)') // 'data' does not exist in DB, it's base64 local only
         .order('start_time', { ascending: false })
         .limit(20);
 
