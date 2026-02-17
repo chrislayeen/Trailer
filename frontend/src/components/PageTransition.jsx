@@ -1,10 +1,12 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { pageVariants } from '../utils/animations';
 
 const PageTransition = ({ children }) => {
+    const shouldReduceMotion = useReducedMotion();
+
     return (
         <motion.div
-            variants={pageVariants}
+            variants={!shouldReduceMotion ? pageVariants : {}}
             initial="initial"
             animate="animate"
             exit="exit"

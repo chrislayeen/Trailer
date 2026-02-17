@@ -21,8 +21,19 @@ const Scanner = () => {
     // Cleanup on unmount
     useEffect(() => {
         return () => {
-            if (html5QrCodeRef.current && html5QrCodeRef.current.isScanning) {
-                html5QrCodeRef.current.stop().catch(err => console.error("Failed to stop scanner", err));
+            if (html5QrCodeRef.current) {
+                if (html5QrCodeRef.current.isScanning) {
+                    html5QrCodeRef.current.stop()
+                        .then(() => html5QrCodeRef.current.clear())
+                        .catch(err => console.warn("Scanner stop error on unmount", err));
+                } else {
+                    html5QrCodeRef.current.clear();
+                }
+            }
+            // Stop any lingering media tracks
+            const video = document.querySelector('video');
+            if (video && video.srcObject) {
+                video.srcObject.getTracks().forEach(track => track.stop());
             }
         };
     }, []);
