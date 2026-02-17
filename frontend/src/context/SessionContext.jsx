@@ -26,7 +26,7 @@ export const SessionProvider = ({ children }) => {
         .limit(20);
 
       if (error) {
-        console.error('Error fetching sessions:', error);
+        console.error('Error fetching sessions:', JSON.stringify(error, null, 2));
       } else {
         setSessions(data || []);
       }
@@ -112,7 +112,8 @@ export const SessionProvider = ({ children }) => {
 
       return data;
     } catch (error) {
-      console.error('Error starting session:', error);
+      console.error('Error starting session FULL:', JSON.stringify(error, null, 2));
+      console.error('Error starting session OBJ:', error);
       if (error.code === 'PGRST205' || error.message?.includes('does not exist')) {
         toast.error('Database setup required. Please run the schema.sql script in Supabase.');
       } else {
