@@ -9,7 +9,7 @@ export const useSession = () => useContext(SessionContext);
 
 export const SessionProvider = ({ children }) => {
   const { isAdmin, user } = useAuth();
-  const [driverName, setDriverName] = useState('');
+  const [driverName, setDriverName] = useState(() => localStorage.getItem('driver_name') || '');
   const [sessions, setSessions] = useState([]);
   const [currentSession, setCurrentSession] = useState(null);
   const [lastCompletedSession, setLastCompletedSession] = useState(null);
@@ -69,6 +69,7 @@ export const SessionProvider = ({ children }) => {
       if (!data) throw new Error('Invalid credentials');
 
       setDriverName(data.user_name);
+      localStorage.setItem('driver_name', data.user_name);
       return true;
     } catch (error) {
       console.error('Driver login error:', error);
@@ -78,6 +79,7 @@ export const SessionProvider = ({ children }) => {
 
   const logoutDriver = useCallback(() => {
     setDriverName('');
+    localStorage.removeItem('driver_name');
     setCurrentSession(null);
     setLastCompletedSession(null);
   }, []);
@@ -114,7 +116,7 @@ export const SessionProvider = ({ children }) => {
       if (error.code === 'PGRST205' || error.message?.includes('does not exist')) {
         toast.error('Database setup required. Please run the schema.sql script in Supabase.');
       } else {
-        toast.error('Failed to start session. Please try again.');
+        toast.error(`Start failed: ${error.message || 'Unknown error'}`);
       }
       throw error;
     }
