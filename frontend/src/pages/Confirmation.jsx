@@ -25,7 +25,7 @@ const Confirmation = () => {
     if (!session) {
         return (
             <div style={{ textAlign: 'center', marginTop: '4rem' }}>
-                <p>No session found.</p>
+                <p>{t('confirmation.no_session')}</p>
                 <Button onClick={() => navigate('/')}>{t('confirmation.return_home')}</Button>
             </div>
         )
@@ -65,14 +65,14 @@ const Confirmation = () => {
                 {/* Locked Badge */}
                 <div style={{ marginBottom: '2rem' }}>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#f3f4f6', padding: '0.75rem 1.5rem', borderRadius: '999px', color: '#4b5563', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', border: '1px solid #e5e7eb' }}>
-                        <Lock size={12} /> RECORD LOCKED & ENCRYPTED
+                        <Lock size={12} /> {t('confirmation.locked')}
                     </div>
                 </div>
 
                 {/* Metadata Card */}
                 <div style={{ width: '100%', background: 'white', borderRadius: '16px', border: '1px solid #e5e7eb', overflow: 'hidden', marginBottom: '2rem', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', textAlign: 'left' }}>
                     <div style={{ padding: '1rem 1.5rem', borderBottom: '1px solid #f3f4f6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '1px' }}>METADATA</span>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '1px' }}>{t('confirmation.metadata')}</span>
                         <span style={{ color: '#cbd5e1', fontSize: '1.2rem' }}>ⓘ</span>
                     </div>
                     <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -82,7 +82,7 @@ const Confirmation = () => {
                         </div>
                         <div style={{ height: '1px', background: '#f1f5f9' }}></div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span style={{ color: '#64748b', fontWeight: 500 }}>Timestamp</span>
+                            <span style={{ color: '#64748b', fontWeight: 500 }}>{t('confirmation.timestamp')}</span>
                             <span style={{ fontWeight: 600, color: '#1e293b' }}>
                                 {session.end_time ? new Date(session.end_time).toLocaleString(i18n.language === 'nl' ? 'nl-NL' : 'en-US', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }) : 'N/A'}
                             </span>
@@ -91,7 +91,7 @@ const Confirmation = () => {
                             <>
                                 <div style={{ height: '1px', background: '#f1f5f9' }}></div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ color: '#64748b', fontWeight: 500 }}>GPS</span>
+                                    <span style={{ color: '#64748b', fontWeight: 500 }}>{t('confirmation.gps')}</span>
                                     <span style={{ fontWeight: 600, color: '#1e293b', fontSize: '0.8rem' }}>
                                         {session.gps_lat.toFixed(6)}, {session.gps_lng.toFixed(6)}
                                     </span>
@@ -100,9 +100,9 @@ const Confirmation = () => {
                         )}
                         <div style={{ height: '1px', background: '#f1f5f9' }}></div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span style={{ color: '#64748b', fontWeight: 500 }}>Status</span>
+                            <span style={{ color: '#64748b', fontWeight: 500 }}>{t('confirmation.status')}</span>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#10b981', fontWeight: 700 }}>
-                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981' }}></div> Uploaded
+                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981' }}></div> {t('confirmation.uploaded')}
                             </div>
                         </div>
                     </div>
@@ -111,8 +111,8 @@ const Confirmation = () => {
                 {/* Documentation Grid */}
                 <div style={{ width: '100%', marginBottom: '2rem', textAlign: 'left' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                        <h3 style={{ fontSize: '1.1rem', fontWeight: 800 }}>Documentation ({session.photos?.length || 0})</h3>
-                        <span style={{ color: '#2563eb', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer' }}>Read Only</span>
+                        <h3 style={{ fontSize: '1.1rem', fontWeight: 800 }}>{t('confirmation.documentation')} ({session.photos?.length || 0})</h3>
+                        <span style={{ color: '#2563eb', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer' }}>{t('confirmation.read_only')}</span>
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
                         {(session.photos || []).slice(0, 6).map((photo) => {
@@ -125,7 +125,7 @@ const Confirmation = () => {
                         })}
                     </div>
                     <p style={{ textAlign: 'center', fontSize: '0.75rem', color: '#9ca3af', fontStyle: 'italic', marginTop: '1.5rem', marginBottom: '1rem' }}>
-                        All photos are timestamped and geo-tagged for quality.
+                        {t('confirmation.quality_assurance')}
                     </p>
                 </div>
 
@@ -134,7 +134,7 @@ const Confirmation = () => {
                     <div style={{ width: '100%', marginBottom: '2rem', textAlign: 'left' }}>
                         <div style={{ padding: '1.25rem', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                             <h4 style={{ fontSize: '0.75rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.75rem' }}>
-                                SESSION REMARKS
+                                {t('confirmation.remarks')}
                             </h4>
                             <p style={{ fontSize: '1rem', color: '#1e293b', lineHeight: '1.5', margin: 0 }}>
                                 "{session.comments}"
@@ -164,7 +164,7 @@ const Confirmation = () => {
                             boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.3)'
                         }}
                     >
-                        <ScanLine size={20} /> Start New Scan
+                        <ScanLine size={20} /> {t('confirmation.start_new')}
                     </button>
                     <button
                         onClick={handleDashboard}

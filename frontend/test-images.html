@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Storage Audit</title>
+</head>
+<body>
+    <h1>Supabase Image Test</h1>
+    <div id="status">Checking...</div>
+    <div id="images"></div>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+        const supabaseUrl = 'https://jvtwzkqyzujsinwrijal.supabase.co';
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2dHd6a3F5enVqc2lud3JpamFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwNzYwNDksImV4cCI6MjA4NjY1MjA0OX0.EPektTpNJLBgqrIm9I7ANIdf1MDSkr2UgL8bos5rv7k';
+
+        const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+        async function test() {
+            const status = document.getElementById('status');
+            const images = document.getElementById('images');
+
+            try {
+                // 1. Fetch photo records
+                const { data: photos, error } = await supabase.from('photos').select('*').limit(5);
+                if (error) {
+                    status.innerText = 'DB Error: ' + error.message;
+                    return;
+                }
+
+                if (!photos || photos.length === 0) {
+                    status.innerText = 'No photo records found in the database. Please upload some first.';
+                    return;
+                }
+
+                status.innerText = `Found ${photos.length} records. Attempting to load images...`;
+
+                photos.forEach(async (p) => {
+                    const { data } = supabase.storage.from('photos').getPublicUrl(p.storage_path);
+                    const url = data.publicUrl;
+                    
+                    const div = document.createElement('div');
+                    div.style.margin = '20px';
+                    div.innerHTML = `
+                        <p>Path: ${p.storage_path}</p>
+                        <p>URL: <a href="${url}" target="_blank">${url}</a></p>
+                        <img src="${url}" style="max-width: 300px; border: 1px solid red;" onerror="this.style.borderColor='black'; this.previousElementSibling.innerText += ' (LOAD FAILED)'"/>
+                    `;
+                    images.appendChild(div);
+                    
+                    // Actual fetch test for CORS
+                    try {
+                        const res = await fetch(url, { method: 'HEAD' });
+                        if (res.ok) {
+                            div.querySelector('p:nth-child(2)').innerText += ' - [OK]';
+                        } else {
+                            div.querySelector('p:nth-child(2)').innerText += ` - [FAILED: ${res.status}]`;
+                        }
+                    } catch (e) {
+                        div.querySelector('p:nth-child(2)').innerText += ' - [FETCH ERROR (CORS?)]';
+                    }
+                });
+
+            } catch (e) {
+                status.innerText = 'App Error: ' + e.message;
+            }
+        }
+
+        test();
+    </script>
+</body>
+</html>

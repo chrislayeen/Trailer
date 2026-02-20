@@ -344,7 +344,7 @@ const Scanner = () => {
                                 cursor: 'pointer'
                             }}
                         >
-                            Retry
+                            {t('scan.retry')}
                         </button>
                     </div>
                 )}

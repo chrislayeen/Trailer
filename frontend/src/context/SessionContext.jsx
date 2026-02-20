@@ -36,19 +36,26 @@ export const SessionProvider = ({ children }) => {
     fetchSessions();
 
     // Real-time subscription for new sessions
-    const subscription = supabase
-      .channel('public:sessions')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'sessions' }, (payload) => {
-        if (payload.eventType === 'INSERT') {
-          setSessions(prev => [payload.new, ...prev]);
-        } else if (payload.eventType === 'UPDATE') {
-          setSessions(prev => prev.map(s => s.id === payload.new.id ? payload.new : s));
-        }
-      })
-      .subscribe();
+    // Using a slight delay to prevent strict-mode double-mounting from instantly aborting the websocket handshake.
+    let channel;
+    const timeoutId = setTimeout(() => {
+      channel = supabase
+        .channel('public:sessions')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'sessions' }, (payload) => {
+          if (payload.eventType === 'INSERT') {
+            setSessions(prev => [payload.new, ...prev]);
+          } else if (payload.eventType === 'UPDATE') {
+            setSessions(prev => prev.map(s => s.id === payload.new.id ? payload.new : s));
+          }
+        });
+      channel.subscribe();
+    }, 150);
 
     return () => {
-      supabase.removeChannel(subscription);
+      clearTimeout(timeoutId);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
   }, [isAdmin]);
 
@@ -103,6 +110,7 @@ export const SessionProvider = ({ children }) => {
       setCurrentSession({
         ...data,
         photos: [], // Photos will be fetched/added separately
+        uploadedPhotos: [], // Previouly uploaded session photos
         location_verified: false, // Local state
         location_type: null,
         gps_lat: null,
@@ -197,7 +205,8 @@ export const SessionProvider = ({ children }) => {
     // Optimistic UI update
     setCurrentSession(prev => prev ? ({
       ...prev,
-      photos: prev.photos.filter(p => p.id !== photoId)
+      photos: prev.photos.filter(p => p.id !== photoId),
+      uploadedPhotos: (prev.uploadedPhotos || []).filter(p => p.id !== photoId)
     }) : null);
 
     try {
@@ -218,14 +227,19 @@ export const SessionProvider = ({ children }) => {
     }
   }, [currentSession]);
 
-  const submitSession = useCallback(async () => {
+  const submitSession = useCallback(async (overrideComments = null) => {
     if (!currentSession) return;
 
     try {
+      const existingComments = currentSession.comments || '';
+      const newComments = overrideComments
+        ? (existingComments ? existingComments + '\n---\n' + overrideComments : overrideComments)
+        : existingComments;
+
       const payload = {
         status: 'uploaded',
         end_time: new Date().toISOString(),
-        comments: currentSession.comments,
+        comments: newComments,
         gps_lat: currentSession.gps_lat,
         gps_lng: currentSession.gps_lng
       };
@@ -261,23 +275,26 @@ export const SessionProvider = ({ children }) => {
       // OR generate publicRow URLs.
       // Let's use the DB return but map the photos to include URLs.
 
-      const enrichedPhotos = (data.photos || []).map(p => ({
-        ...p,
-        url: supabase.storage.from('photos').getPublicUrl(p.storage_path).data.publicUrl
-      }));
-
-      // Fallback: If DB photos lookup is delayed/not structured, use currentSession.photos
-      // But submitSession awaits, so data should be fresh.
-      // Note: Relation 'photos' must exist in DB for the join to work.
-
-      setLastCompletedSession({
-        ...data,
-        photos: enrichedPhotos.length > 0 ? enrichedPhotos : currentSession.photos
+      const enrichedPhotos = (data.photos || []).map(p => {
+        // Find existing local photo to preserve base64 data URL for fast UI
+        const existingLocal = currentSession.photos.find(local => local.id === p.id);
+        const existingUploaded = (currentSession.uploadedPhotos || []).find(up => up.id === p.id);
+        return {
+          ...p,
+          url: supabase.storage.from('photos').getPublicUrl(p.storage_path).data.publicUrl,
+          data: existingLocal?.data || existingUploaded?.data // Keep base64 if available
+        };
       });
 
-      // Reset local current session
-      setCurrentSession(null);
-      toast.success("Session submitted successfully!");
+      // Keep session open instead of clearing it, but reset the photos to empty array so the UI clears out
+      setCurrentSession(prev => ({
+        ...prev,
+        ...data,
+        photos: [], // Empty out the photos from the UI
+        uploadedPhotos: enrichedPhotos // Keep track of successfully uploaded ones
+      }));
+
+      toast.success("Photos uploaded successfully!");
 
     } catch (error) {
       console.error('Error submitting session:', error);

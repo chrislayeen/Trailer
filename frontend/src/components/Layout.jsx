@@ -5,8 +5,11 @@ import { useSession } from '../context/SessionContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import { LogOut, LayoutDashboard } from 'lucide-react';
 
+import { useAuth } from '../context/AuthContext';
+
 const Layout = ({ children }) => {
-    const { driverName, isAdmin, logoutDriver, logoutAdmin } = useSession();
+    const { driverName, isAdmin, logoutDriver } = useSession();
+    const { signOut } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const { t } = useTranslation();
@@ -17,7 +20,7 @@ const Layout = ({ children }) => {
 
     const handleLogout = () => {
         if (isAdminRoute) {
-            logoutAdmin();
+            signOut();
             navigate('/admin/login');
         } else {
             logoutDriver();
@@ -30,63 +33,77 @@ const Layout = ({ children }) => {
     }
 
     return (
-        <div className="layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-            {!isScanner && (
+        <div className="layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#f8fafc' }}>
+            {!isScanner && !isQrScreen && (
                 <header style={{
-                    backgroundColor: 'var(--color-white)',
-                    color: 'var(--slate-900)',
-                    padding: '1rem',
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    backdropFilter: 'blur(12px)',
+                    WebkitBackdropFilter: 'blur(12px)',
+                    color: '#0f172a',
+                    padding: '16px 20px',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    borderBottom: '1px solid var(--color-gray-200)',
+                    borderBottom: '1px solid rgba(0,0,0,0.06)',
                     position: 'sticky',
                     top: 0,
-                    zIndex: 10
+                    zIndex: 100,
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.02)'
                 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        {/* Simulated Back button if not home, for visual completeness matching design */}
-                        {!isQrScreen && <button style={{ background: 'none', border: 'none', padding: 0, marginRight: '8px' }} onClick={() => navigate(-1)}><div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#eff6ff', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>‹</div></button>}
-                        <h1 style={{ fontSize: '1.1rem', fontWeight: 600 }}>{t('app.header_title')}</h1>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        {/* Elegant Back Button */}
+                        <button
+                            onClick={() => navigate(-1)}
+                            style={{
+                                background: 'white',
+                                border: '1px solid #e2e8f0',
+                                width: '36px',
+                                height: '36px',
+                                borderRadius: '10px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                cursor: 'pointer',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+                            }}
+                        >
+                            <span style={{ color: '#475569', fontSize: '18px', lineHeight: 1, marginTop: '-2px' }}>‹</span>
+                        </button>
+
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <h1 style={{ fontSize: '16px', fontWeight: 800, letterSpacing: '-0.3px', margin: 0, color: '#0f172a' }}>
+                                {t('app.header_title')}
+                            </h1>
+                            <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                {t('app.field_ops')}
+                            </span>
+                        </div>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <LanguageSwitcher />
 
                         {driverName && !isAdminRoute && (
-                            <span style={{ fontSize: '0.9rem', color: 'var(--primary)', fontWeight: 500 }}>
-                                {driverName}
-                            </span>
-                        )}
-
-                        {(driverName || isAdmin) && !isQrScreen && (
-                            <button
-                                onClick={handleLogout}
-                                style={{
-                                    background: '#fef2f2',
-                                    color: '#b91c1c',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    cursor: 'pointer',
-                                    border: '1px solid #fee2e2',
-                                    width: '38px',
-                                    height: '38px',
-                                    borderRadius: '50%',
-                                    fontSize: '0.85rem',
-                                    fontWeight: 600,
-                                    transition: 'all 0.2s'
-                                }}
-                                title={t('app.logout')}
-                            >
-                                <LogOut size={18} />
-                            </button>
+                            <div style={{
+                                background: '#f8fafc',
+                                padding: '6px 12px',
+                                borderRadius: '999px',
+                                border: '1px solid #e2e8f0',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px'
+                            }}>
+                                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981' }}></div>
+                                <span style={{ fontSize: '13px', color: '#334155', fontWeight: 700, letterSpacing: '0.2px' }}>
+                                    {driverName}
+                                </span>
+                            </div>
                         )}
                     </div>
                 </header>
             )}
 
-            <main style={{ flex: 1, width: '100%', maxWidth: isScanner ? '100%' : '600px', padding: isScanner ? 0 : '1rem', margin: '0 auto', position: 'relative' }}>
+            <main style={{ flex: 1, width: '100%', maxWidth: isScanner ? '100%' : '600px', padding: isScanner ? 0 : '20px', margin: '0 auto', position: 'relative' }}>
                 {children}
             </main>
         </div>

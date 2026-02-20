@@ -32,7 +32,7 @@ const SessionStart = () => {
             return;
         }
         if (pin.length < 6) {
-            setError('PIN must be 6 digits');
+            setError(t('session.pin_error'));
             return;
         }
 
@@ -40,7 +40,7 @@ const SessionStart = () => {
         if (success) {
             navigate('/capture');
         } else {
-            setError('Invalid credentials');
+            setError(t('session.invalid_credentials'));
         }
     }
 
@@ -49,7 +49,7 @@ const SessionStart = () => {
     return (
         <div style={{ paddingBottom: '2rem' }}>
             <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', fontWeight: 800 }}>{t('session.start_session')}</h2>
-            <p style={{ color: 'var(--color-gray-500)', marginBottom: '1.5rem' }}>Review the scanned unit information</p>
+            <p style={{ color: 'var(--color-gray-500)', marginBottom: '1.5rem' }}>{t('session.review_info')}</p>
 
             {/* Trailer Card */}
             <div style={{ background: 'white', borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.05)', marginBottom: '2rem' }}>
@@ -63,11 +63,11 @@ const SessionStart = () => {
 
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <div>
-                            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-gray-500)', textTransform: 'uppercase' }}>ERP Order</label>
-                            <div style={{ fontSize: '1rem', color: 'var(--color-gray-400)', fontStyle: 'italic', marginTop: '2px' }}>Not provided</div>
+                            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-gray-500)', textTransform: 'uppercase' }}>{t('session.erp_order')}</label>
+                            <div style={{ fontSize: '1rem', color: 'var(--color-gray-400)', fontStyle: 'italic', marginTop: '2px' }}>{t('session.not_provided')}</div>
                         </div>
                         <div style={{ textAlign: 'right' }}>
-                            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-gray-500)', textTransform: 'uppercase' }}>Last Fetched</label>
+                            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-gray-500)', textTransform: 'uppercase' }}>{t('session.last_fetched')}</label>
                             <div style={{ fontSize: '1rem', color: 'var(--color-primary-dark)', fontWeight: 500, marginTop: '2px' }}>Feb 14, 3:00 PM</div>
                         </div>
                     </div>
@@ -79,7 +79,7 @@ const SessionStart = () => {
                 <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>
                     <User size={24} fill="var(--primary)" stroke="none" /> {t('session.start_session')}
                 </h3>
-                <p style={{ color: 'var(--color-gray-500)', marginBottom: '1.5rem' }}>Enter your credentials to begin inspection</p>
+                <p style={{ color: 'var(--color-gray-500)', marginBottom: '1.5rem' }}>{t('session.enter_credentials')}</p>
 
                 <form onSubmit={handleSubmit}>
                     <Input
@@ -107,7 +107,7 @@ const SessionStart = () => {
                     />
 
                     <p style={{ fontSize: '0.875rem', color: 'var(--color-gray-400)', marginBottom: '1.5rem' }}>
-                        Provided by your assembly manager
+                        {t('session.pin_hint')}
                     </p>
 
                     <Button
@@ -128,7 +128,7 @@ const SessionStart = () => {
                         <Phone size={16} /> 1-800-TRAILER
                     </a>
                     <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--primary)', textDecoration: 'none', fontWeight: 600 }}>
-                        <Mail size={16} /> Support Email
+                        <Mail size={16} /> {t('session.support_email')}
                     </a>
                 </div>
                 <p style={{ fontSize: '0.7rem', color: 'var(--color-gray-300)', letterSpacing: '1px' }}>TRAILER ASSEMBLY PORTAL V4.2.0</p>
