@@ -124,10 +124,19 @@ const Scanner = () => {
         console.log("Scanned Value:", decodedText); // Audit Log
 
         const cleanText = decodedText.trim();
-        // URL Format: https://notification.test.imetricsbv.com/XL90D151824467926/
-        // Regex to extract ID from URL or accept raw ID
-        // 1. Check for URL pattern
+
+        // 1. URL Format: https://notification.test.imetricsbv.com/XL90D151824467926/
         const urlMatch = cleanText.match(/imetricsbv\.com\/([A-Z0-9]+)\/?$/i);
+
+        // 2. Key-Value Pattern (Chassis: ID, VIN 123, etc.)
+        const kvMatch = cleanText.match(/(?:chassis|vin|trailer|vehicle|unit|number|nr|id|vehicule)[\W_: ]+([A-Z0-9\-]+)/i);
+
+        // 3. Broad ID Regex (3-30 chars, alphanumeric + hyphens)
+        const idRegex = /^[A-Z0-9\-]{3,30}$/i;
+
+        // 4. Vehicle Mention Verification
+        const vehicleKeywords = ['chassis', 'vin', 'trailer', 'vehicle', 'unit', 'vehicule'];
+        const hasVehicleMention = vehicleKeywords.some(k => cleanText.toLowerCase().includes(k));
 
         let isValid = false;
         let chassisId = cleanText;
@@ -135,14 +144,13 @@ const Scanner = () => {
         if (urlMatch && urlMatch[1]) {
             isValid = true;
             chassisId = urlMatch[1];
-        } else {
-            // 2. Fallback: Check for alphanumeric ID (min 5 chars) or legacy 'trailer' format
-            const idRegex = /^[A-Z0-9]{5,20}$/i;
-            const legacyRegex = /^trailer[\W_]?\d{5}$/i;
-
-            if (idRegex.test(cleanText) || legacyRegex.test(cleanText)) {
-                isValid = true;
-            }
+        } else if (kvMatch && kvMatch[1]) {
+            isValid = true;
+            chassisId = kvMatch[1];
+        } else if (idRegex.test(cleanText) || hasVehicleMention) {
+            isValid = true;
+            // If it's a mention like "Trailer 101", we'll just use the whole string but trim to sensible length
+            chassisId = cleanText.substring(0, 30);
         }
 
         if (isValid) {
@@ -216,20 +224,24 @@ const Scanner = () => {
         if (e) e.preventDefault();
         const cleanId = manualId.trim();
 
-        // Allow URL or alphanumeric ID for manual entry
         const urlMatch = cleanId.match(/imetricsbv\.com\/([A-Z0-9]+)\/?$/i);
+        const kvMatch = cleanId.match(/(?:chassis|vin|trailer|vehicle|unit|number|nr|id|vehicule)[\W_: ]+([A-Z0-9\-]+)/i);
+        const idRegex = /^[A-Z0-9\-]{3,30}$/i;
+        const vehicleKeywords = ['chassis', 'vin', 'trailer', 'vehicle', 'unit', 'vehicule'];
+        const hasVehicleMention = vehicleKeywords.some(k => cleanId.toLowerCase().includes(k));
+
         let isValid = false;
         let chassisId = cleanId;
 
         if (urlMatch && urlMatch[1]) {
             isValid = true;
             chassisId = urlMatch[1];
-        } else {
-            const idRegex = /^[A-Z0-9]{5,20}$/i;
-            const legacyRegex = /^trailer[\W_]?\d{5}$/i;
-            if (idRegex.test(cleanId) || legacyRegex.test(cleanId)) {
-                isValid = true;
-            }
+        } else if (kvMatch && kvMatch[1]) {
+            isValid = true;
+            chassisId = kvMatch[1];
+        } else if (idRegex.test(cleanId) || hasVehicleMention) {
+            isValid = true;
+            chassisId = cleanId.substring(0, 30);
         }
 
         if (isValid) {
