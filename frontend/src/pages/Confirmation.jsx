@@ -25,7 +25,7 @@ const Confirmation = () => {
     if (!session) {
         return (
             <div style={{ textAlign: 'center', marginTop: '4rem' }}>
-                <p>{t('confirmation.no_session')}</p>
+                <p style={{ color: 'var(--text-muted)' }}>{t('confirmation.no_session')}</p>
                 <Button onClick={() => navigate('/')}>{t('confirmation.return_home')}</Button>
             </div>
         )
@@ -53,56 +53,56 @@ const Confirmation = () => {
 
                 {/* Success Section */}
                 <div style={{ marginBottom: '2rem' }}>
-                    <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#d1fae5', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto' }}>
-                        <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+                    <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(16, 185, 129, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto' }}>
+                        <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--success)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
                             <Check size={24} strokeWidth={4} />
                         </div>
                     </div>
-                    <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#111827', marginBottom: '0.5rem' }}>{t('confirmation.success_title')}</h1>
-                    <p style={{ color: '#6b7280', fontSize: '1rem' }}>{t('confirmation.success_message')}</p>
+                    <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-main)', marginBottom: '0.5rem' }}>{t('confirmation.success_title')}</h1>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>{t('confirmation.success_message')}</p>
                 </div>
 
                 {/* Locked Badge */}
                 <div style={{ marginBottom: '2rem' }}>
-                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#f3f4f6', padding: '0.75rem 1.5rem', borderRadius: '999px', color: '#4b5563', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', border: '1px solid #e5e7eb' }}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'var(--bg-card)', padding: '0.75rem 1.5rem', borderRadius: '999px', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', border: '1px solid var(--border-input)' }}>
                         <Lock size={12} /> {t('confirmation.locked')}
                     </div>
                 </div>
 
                 {/* Metadata Card */}
-                <div style={{ width: '100%', background: 'white', borderRadius: '16px', border: '1px solid #e5e7eb', overflow: 'hidden', marginBottom: '2rem', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', textAlign: 'left' }}>
-                    <div style={{ padding: '1rem 1.5rem', borderBottom: '1px solid #f3f4f6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '1px' }}>{t('confirmation.metadata')}</span>
-                        <span style={{ color: '#cbd5e1', fontSize: '1.2rem' }}>ⓘ</span>
+                <div style={{ width: '100%', background: 'var(--bg-card)', borderRadius: '16px', border: '1px solid var(--border-light)', overflow: 'hidden', marginBottom: '2rem', boxShadow: '0 1px 3px var(--shadow-color)', textAlign: 'left' }}>
+                    <div style={{ padding: '1rem 1.5rem', borderBottom: '1px solid var(--border-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>{t('confirmation.metadata')}</span>
+                        <span style={{ color: 'var(--slate-400)', fontSize: '1.2rem' }}>ⓘ</span>
                     </div>
                     <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span style={{ color: '#64748b', fontWeight: 500 }}>{t('confirmation.session_id')}</span>
-                            <span style={{ fontWeight: 800, color: '#1e293b' }}>#TR-{session.chassis_id?.substring(0, 5) || 'XXXX'}-X</span>
+                            <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>{t('confirmation.session_id')}</span>
+                            <span style={{ fontWeight: 800, color: 'var(--text-main)' }}>#TR-{session.chassis_id?.substring(0, 5) || 'XXXX'}-X</span>
                         </div>
-                        <div style={{ height: '1px', background: '#f1f5f9' }}></div>
+                        <div style={{ height: '1px', background: 'var(--border-light)' }}></div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span style={{ color: '#64748b', fontWeight: 500 }}>{t('confirmation.timestamp')}</span>
-                            <span style={{ fontWeight: 600, color: '#1e293b' }}>
+                            <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>{t('confirmation.timestamp')}</span>
+                            <span style={{ fontWeight: 600, color: 'var(--text-main)' }}>
                                 {session.end_time ? new Date(session.end_time).toLocaleString(i18n.language === 'nl' ? 'nl-NL' : 'en-US', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }) : 'N/A'}
                             </span>
                         </div>
                         {session.gps_lat !== 0 && session.gps_lat != null && (
                             <>
-                                <div style={{ height: '1px', background: '#f1f5f9' }}></div>
+                                <div style={{ height: '1px', background: 'var(--border-light)' }}></div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ color: '#64748b', fontWeight: 500 }}>{t('confirmation.gps')}</span>
-                                    <span style={{ fontWeight: 600, color: '#1e293b', fontSize: '0.8rem' }}>
+                                    <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>{t('confirmation.gps')}</span>
+                                    <span style={{ fontWeight: 600, color: 'var(--text-main)', fontSize: '0.8rem' }}>
                                         {session.gps_lat.toFixed(6)}, {session.gps_lng.toFixed(6)}
                                     </span>
                                 </div>
                             </>
                         )}
-                        <div style={{ height: '1px', background: '#f1f5f9' }}></div>
+                        <div style={{ height: '1px', background: 'var(--border-light)' }}></div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span style={{ color: '#64748b', fontWeight: 500 }}>{t('confirmation.status')}</span>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#10b981', fontWeight: 700 }}>
-                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981' }}></div> {t('confirmation.uploaded')}
+                            <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>{t('confirmation.status')}</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--success)', fontWeight: 700 }}>
+                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--success)' }}></div> {t('confirmation.uploaded')}
                             </div>
                         </div>
                     </div>
@@ -132,11 +132,11 @@ const Confirmation = () => {
                 {/* Session Remarks / Comments */}
                 {session.comments && (
                     <div style={{ width: '100%', marginBottom: '2rem', textAlign: 'left' }}>
-                        <div style={{ padding: '1.25rem', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                            <h4 style={{ fontSize: '0.75rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.75rem' }}>
+                        <div style={{ padding: '1.25rem', background: 'var(--bg-input)', borderRadius: '12px', border: '1px solid var(--border-light)' }}>
+                            <h4 style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.75rem' }}>
                                 {t('confirmation.remarks')}
                             </h4>
-                            <p style={{ fontSize: '1rem', color: '#1e293b', lineHeight: '1.5', margin: 0 }}>
+                            <p style={{ fontSize: '1rem', color: 'var(--text-main)', lineHeight: '1.5', margin: 0 }}>
                                 "{session.comments}"
                             </p>
                         </div>
@@ -171,9 +171,9 @@ const Confirmation = () => {
                         style={{
                             width: '100%',
                             padding: '1rem',
-                            background: 'white',
-                            color: '#2563eb',
-                            border: '1px solid #e5e7eb',
+                            background: 'var(--bg-card)',
+                            color: 'var(--primary)',
+                            border: '1px solid var(--border-input)',
                             borderRadius: '12px',
                             fontSize: '1rem',
                             fontWeight: 700,
@@ -182,7 +182,7 @@ const Confirmation = () => {
                             alignItems: 'center',
                             justifyContent: 'center',
                             transition: 'all 0.2s',
-                            boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                            boxShadow: '0 1px 2px var(--shadow-color)'
                         }}
                     >
                         {t('confirmation.return_home')}

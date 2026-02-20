@@ -96,7 +96,47 @@
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 
+  /* Semantic Theme Variables (Light Default) */
+  --bg-app: linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%);
+  --bg-surface: #ffffff;
+  --bg-header: rgba(255, 255, 255, 0.95);
+  --bg-input: #f9fafb;
+  --bg-card: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-inverse: #ffffff;
+  --border-light: rgba(0, 0, 0, 0.06);
+  --border-input: #e5e7eb;
+  --shadow-color: rgba(0, 0, 0, 0.03);
+
   font-family: 'Satoshi', system-ui, -apple-system, sans-serif;
+}
+
+/* Dark Mode Overrides */
+.dark {
+  --bg-app: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+  --bg-surface: #0f172a;
+  --bg-header: rgba(15, 23, 42, 0.9);
+  --bg-input: #1e293b;
+  --bg-card: #1e293b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-inverse: #020617;
+  --border-light: rgba(255, 255, 255, 0.08);
+  --border-input: #334155;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+
+  --slate-50: #020617;
+  --slate-100: #0f172a;
+  --slate-200: #1e293b;
+  --slate-300: #334155;
+  --slate-400: #475569;
+  --slate-500: #64748b;
+  --slate-600: #94a3b8;
+  --slate-700: #cbd5e1;
+  --slate-800: #e2e8f0;
+  --slate-900: #f1f5f9;
+  --slate-950: #f8fafc;
 }
 
 * {
@@ -107,9 +147,10 @@
 }
 
 body {
-  background: linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%);
-  color: var(--color-gray-800);
+  background: var(--bg-app);
+  color: var(--text-main);
   min-height: 100vh;
+  transition: background 0.3s ease, color 0.3s ease;
   display: flex;
   flex-direction: column;
   overflow-y: auto;

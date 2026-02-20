@@ -25,16 +25,13 @@ const QRScan = () => {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', paddingBottom: '2rem', position: 'relative' }}>
-            <div style={{ position: 'absolute', top: '16px', right: '16px', zIndex: 10 }}>
-                <LanguageSwitcher variant="light" />
-            </div>
             {/* Branding */}
             <div style={{ textAlign: 'center', marginBottom: '2rem', marginTop: '1rem', position: 'relative', width: '100%', maxWidth: '320px' }}>
-                <div style={{ display: 'inline-flex', padding: '12px', background: 'var(--slate-100)', borderRadius: '12px', color: 'var(--primary)', marginBottom: '1rem', marginTop: '2rem' }}>
+                <div style={{ display: 'inline-flex', padding: '12px', background: 'var(--bg-card)', borderRadius: '12px', color: 'var(--primary)', marginBottom: '1rem', marginTop: '2rem', border: '1px solid var(--border-light)' }}>
                     <Bot size={32} />
                 </div>
                 <h3 style={{ color: 'var(--primary)', fontSize: '0.8rem', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.5rem' }}>{t('app.logistics_corp')}</h3>
-                <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--slate-900)' }}>{t('app.title')}</h1>
+                <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-main)' }}>{t('app.title')}</h1>
             </div>
 
             {/* Scan Frame */}
@@ -47,8 +44,9 @@ const QRScan = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: 'var(--slate-50)',
-                marginBottom: '2rem'
+                backgroundColor: 'var(--bg-card)',
+                marginBottom: '2rem',
+                border: '1px solid var(--border-light)'
             }}>
                 {/* Corner Markers */}
                 <div style={{ position: 'absolute', top: 20, left: 20, width: 40, height: 40, borderTop: '4px solid var(--primary)', borderLeft: '4px solid var(--primary)', borderTopLeftRadius: '8px' }}></div>
@@ -70,9 +68,9 @@ const QRScan = () => {
 
             {/* Main Action */}
             <div style={{ width: '100%', maxWidth: '320px', textAlign: 'center' }}>
-                <h2 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>{t('scan.ready_to_begin')}</h2>
-                <p style={{ color: 'var(--slate-500)', marginBottom: '1.5rem', lineHeight: '1.5' }}>
-                    <Trans i18nKey="scan.scan_instruction" components={{ 1: <strong style={{ color: 'var(--slate-900)', textDecoration: 'underline' }} /> }} />
+                <h2 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--text-main)' }}>{t('scan.ready_to_begin')}</h2>
+                <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', lineHeight: '1.5' }}>
+                    <Trans i18nKey="scan.scan_instruction" components={{ 1: <strong style={{ color: 'var(--text-main)', textDecoration: 'underline' }} /> }} />
                 </p>
 
                 <Button

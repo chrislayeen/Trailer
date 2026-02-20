@@ -165,11 +165,11 @@ const PhotoCapture = () => {
     return (
         <div style={{ paddingBottom: '90px' }}>
             {/* Header Block Matches Mockup */}
-            <div style={{ background: 'white', padding: '16px 20px', borderRadius: '24px', display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px', boxShadow: '0 4px 16px rgba(0,0,0,0.03)', border: '1px solid rgba(0,0,0,0.02)' }}>
+            <div style={{ background: 'var(--bg-card)', padding: '16px 20px', borderRadius: '24px', display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px', boxShadow: '0 4px 16px var(--shadow-color)', border: '1px solid var(--border-light)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
-                        <div style={{ fontSize: '12px', color: '#9ca3af', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px', marginBottom: '4px' }}>{t('session.chassis')}</div>
-                        <div style={{ fontSize: '24px', fontWeight: 800, color: '#111827' }}>{currentSession.chassis_id}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px', marginBottom: '4px' }}>{t('session.chassis')}</div>
+                        <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-main)' }}>{currentSession.chassis_id}</div>
                     </div>
                     {currentSession.location_verified ? (
                         <div style={{ width: 'fit-content', height: 'fit-content', border: '1px solid #10b981', color: '#10b981', background: '#eafff2', padding: '6px 12px', borderRadius: '999px', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -296,7 +296,7 @@ const PhotoCapture = () => {
                 </div>
             ) : (
                 <div style={{ display: 'flex', gap: '12px', marginBottom: '32px' }}>
-                    <button onClick={triggerGallery} disabled={capturing} style={{ flex: 1, padding: '14px', background: 'white', border: '1px solid #e5e7eb', borderRadius: '16px', color: '#111827', fontSize: '15px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer' }}>
+                    <button onClick={triggerGallery} disabled={capturing} style={{ flex: 1, padding: '14px', background: 'var(--bg-card)', border: '1px solid var(--border-input)', borderRadius: '16px', color: 'var(--text-main)', fontSize: '15px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer' }}>
                         <Upload size={18} /> {t('session.upload_file')}
                     </button>
                     <button onClick={triggerNativeCamera} disabled={capturing} style={{ flex: 1, padding: '14px', background: '#2563eb', border: 'none', borderRadius: '16px', color: 'white', fontSize: '15px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)' }}>
@@ -306,7 +306,7 @@ const PhotoCapture = () => {
             )}
 
             {/* Captured Items */}
-            <div style={{ fontSize: '13px', color: '#9ca3af', fontWeight: 700, marginBottom: '24px', letterSpacing: '0.8px', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontWeight: 700, marginBottom: '24px', letterSpacing: '0.8px', textTransform: 'uppercase' }}>
                 {t('session.captured_items', { count: currentSession.photos.length || 0 })}
             </div>
 
@@ -362,13 +362,13 @@ const PhotoCapture = () => {
                         </div>
                         {/* Individual Notes Input */}
                         <div style={{ position: 'relative' }}>
-                            <MessageSquare size={16} color="#9ca3af" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)' }} />
+                            <MessageSquare size={16} color="var(--text-muted)" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)' }} />
                             <input
                                 type="text"
                                 placeholder={t('session.tap_add_notes')}
                                 value={photoNotes[photo.id] || ''}
                                 onChange={(e) => handleNoteChange(photo.id, e.target.value)}
-                                style={{ width: '100%', background: '#f9fafb', border: 'none', padding: '14px 16px 14px 40px', borderRadius: '12px', fontSize: '14px', color: '#374151', outline: 'none' }}
+                                style={{ width: '100%', background: 'var(--bg-input)', border: 'none', padding: '14px 16px 14px 40px', borderRadius: '12px', fontSize: '14px', color: 'var(--text-main)', outline: 'none' }}
                             />
                         </div>
                     </div>
@@ -411,14 +411,14 @@ const PhotoCapture = () => {
                         width: '100%',
                         maxWidth: '500px',
                         padding: '18px',
-                        background: 'white',
-                        color: '#4b5563',
+                        background: 'var(--bg-card)',
+                        color: 'var(--text-muted)',
                         borderRadius: '16px',
-                        border: '1px solid #e5e7eb',
+                        border: '1px solid var(--border-input)',
                         fontSize: '16px',
                         fontWeight: 700,
                         cursor: 'pointer',
-                        boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+                        boxShadow: '0 2px 4px var(--shadow-color)'
                     }}
                 >
                     Logout

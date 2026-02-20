@@ -48,27 +48,27 @@ const SessionStart = () => {
 
     return (
         <div style={{ paddingBottom: '2rem' }}>
-            <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', fontWeight: 800 }}>{t('session.start_session')}</h2>
-            <p style={{ color: 'var(--color-gray-500)', marginBottom: '1.5rem' }}>{t('session.review_info')}</p>
+            <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', fontWeight: 800, color: 'var(--text-main)' }}>{t('session.start_session')}</h2>
+            <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>{t('session.review_info')}</p>
 
             {/* Trailer Card */}
-            <div style={{ background: 'white', borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.05)', marginBottom: '2rem' }}>
+            <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: '0 4px 20px var(--shadow-color)', marginBottom: '2rem', border: '1px solid var(--border-light)' }}>
                 <div style={{ padding: '1.5rem' }}>
                     <div style={{ marginBottom: '1.5rem' }}>
                         <label style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>{t('session.chassis_number')}</label>
-                        <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--color-gray-900)', marginTop: '4px' }}>
+                        <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-main)', marginTop: '4px' }}>
                             {currentSession.chassis_id}
                         </div>
                     </div>
 
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <div>
-                            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-gray-500)', textTransform: 'uppercase' }}>{t('session.erp_order')}</label>
-                            <div style={{ fontSize: '1rem', color: 'var(--color-gray-400)', fontStyle: 'italic', marginTop: '2px' }}>{t('session.not_provided')}</div>
+                            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>{t('session.erp_order')}</label>
+                            <div style={{ fontSize: '1rem', color: 'var(--slate-400)', fontStyle: 'italic', marginTop: '2px' }}>{t('session.not_provided')}</div>
                         </div>
                         <div style={{ textAlign: 'right' }}>
-                            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-gray-500)', textTransform: 'uppercase' }}>{t('session.last_fetched')}</label>
-                            <div style={{ fontSize: '1rem', color: 'var(--color-primary-dark)', fontWeight: 500, marginTop: '2px' }}>Feb 14, 3:00 PM</div>
+                            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>{t('session.last_fetched')}</label>
+                            <div style={{ fontSize: '1rem', color: 'var(--primary)', fontWeight: 500, marginTop: '2px' }}>Feb 14, 3:00 PM</div>
                         </div>
                     </div>
                 </div>
@@ -76,10 +76,10 @@ const SessionStart = () => {
 
             {/* Session Start Form */}
             <div style={{ marginBottom: '2rem' }}>
-                <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>
+                <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--text-main)' }}>
                     <User size={24} fill="var(--primary)" stroke="none" /> {t('session.start_session')}
                 </h3>
-                <p style={{ color: 'var(--color-gray-500)', marginBottom: '1.5rem' }}>{t('session.enter_credentials')}</p>
+                <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>{t('session.enter_credentials')}</p>
 
                 <form onSubmit={handleSubmit}>
                     <Input
@@ -106,7 +106,7 @@ const SessionStart = () => {
                         icon={<Lock size={20} />}
                     />
 
-                    <p style={{ fontSize: '0.875rem', color: 'var(--color-gray-400)', marginBottom: '1.5rem' }}>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
                         {t('session.pin_hint')}
                     </p>
 
@@ -121,8 +121,8 @@ const SessionStart = () => {
             </div>
 
             {/* Footer info */}
-            <div style={{ textAlign: 'center', borderTop: '1px solid var(--color-gray-200)', paddingTop: '2rem' }}>
-                <h4 style={{ color: 'var(--color-gray-500)', marginBottom: '1rem' }}>{t('app.need_assistance')}</h4>
+            <div style={{ textAlign: 'center', borderTop: '1px solid var(--border-light)', paddingTop: '2rem' }}>
+                <h4 style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>{t('app.need_assistance')}</h4>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginBottom: '2rem' }}>
                     <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--primary)', textDecoration: 'none', fontWeight: 600 }}>
                         <Phone size={16} /> 1-800-TRAILER
@@ -131,7 +131,7 @@ const SessionStart = () => {
                         <Mail size={16} /> {t('session.support_email')}
                     </a>
                 </div>
-                <p style={{ fontSize: '0.7rem', color: 'var(--color-gray-300)', letterSpacing: '1px' }}>TRAILER ASSEMBLY PORTAL V4.2.0</p>
+                <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', opacity: 0.6, letterSpacing: '1px' }}>TRAILER ASSEMBLY PORTAL V4.2.0</p>
             </div>
         </div>
     );

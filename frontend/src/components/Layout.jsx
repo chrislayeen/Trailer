@@ -3,13 +3,15 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSession } from '../context/SessionContext';
 import LanguageSwitcher from './LanguageSwitcher';
-import { LogOut, LayoutDashboard } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
+import { LogOut, LayoutDashboard, Sun, Moon } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
 
 const Layout = ({ children }) => {
     const { driverName, isAdmin, logoutDriver } = useSession();
     const { signOut } = useAuth();
+    const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
     const location = useLocation();
     const { t } = useTranslation();
@@ -33,30 +35,61 @@ const Layout = ({ children }) => {
     }
 
     return (
-        <div className="layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#f8fafc' }}>
-            {!isScanner && !isQrScreen && (
+        <div className="layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-app)' }}>
+            {!isScanner && (
                 <header style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    backgroundColor: 'var(--bg-header)',
                     backdropFilter: 'blur(12px)',
                     WebkitBackdropFilter: 'blur(12px)',
-                    color: '#0f172a',
+                    color: 'var(--text-main)',
                     padding: '16px 20px',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    borderBottom: '1px solid rgba(0,0,0,0.06)',
+                    borderBottom: '1px solid var(--border-light)',
                     position: 'sticky',
                     top: 0,
                     zIndex: 100,
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.02)'
+                    boxShadow: '0 4px 20px var(--shadow-color)'
                 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        {/* Elegant Back Button */}
+                        {/* Elegant Back Button - Hidden on Home */}
+                        {!isQrScreen && (
+                            <button
+                                onClick={() => navigate(-1)}
+                                style={{
+                                    background: 'var(--bg-surface)',
+                                    border: '1px solid var(--border-input)',
+                                    width: '36px',
+                                    height: '36px',
+                                    borderRadius: '10px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    cursor: 'pointer',
+                                    boxShadow: '0 2px 4px var(--shadow-color)'
+                                }}
+                            >
+                                <span style={{ color: 'var(--text-muted)', fontSize: '18px', lineHeight: 1, marginTop: '-2px' }}>‹</span>
+                            </button>
+                        )}
+
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <h1 style={{ fontSize: '16px', fontWeight: 800, letterSpacing: '-0.3px', margin: 0, color: 'var(--text-main)' }}>
+                                {t('app.header_title')}
+                            </h1>
+                            <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                {t('app.field_ops')}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <button
-                            onClick={() => navigate(-1)}
+                            onClick={toggleTheme}
                             style={{
-                                background: 'white',
-                                border: '1px solid #e2e8f0',
+                                background: 'var(--bg-surface)',
+                                border: '1px solid var(--border-input)',
                                 width: '36px',
                                 height: '36px',
                                 borderRadius: '10px',
@@ -64,37 +97,27 @@ const Layout = ({ children }) => {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 cursor: 'pointer',
-                                boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+                                transition: 'all 0.2s ease'
                             }}
+                            title={theme === 'light' ? 'Dark Mode' : 'Light Mode'}
                         >
-                            <span style={{ color: '#475569', fontSize: '18px', lineHeight: 1, marginTop: '-2px' }}>‹</span>
+                            {theme === 'light' ? <Moon size={18} color="var(--slate-600)" /> : <Sun size={18} color="var(--warning)" />}
                         </button>
 
-                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <h1 style={{ fontSize: '16px', fontWeight: 800, letterSpacing: '-0.3px', margin: 0, color: '#0f172a' }}>
-                                {t('app.header_title')}
-                            </h1>
-                            <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                                {t('app.field_ops')}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <LanguageSwitcher />
 
                         {driverName && !isAdminRoute && (
                             <div style={{
-                                background: '#f8fafc',
+                                background: 'var(--bg-surface)',
                                 padding: '6px 12px',
                                 borderRadius: '999px',
-                                border: '1px solid #e2e8f0',
+                                border: '1px solid var(--border-input)',
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '8px'
                             }}>
-                                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981' }}></div>
-                                <span style={{ fontSize: '13px', color: '#334155', fontWeight: 700, letterSpacing: '0.2px' }}>
+                                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--success)' }}></div>
+                                <span style={{ fontSize: '13px', color: 'var(--text-main)', fontWeight: 700, letterSpacing: '0.2px' }}>
                                     {driverName}
                                 </span>
                             </div>
