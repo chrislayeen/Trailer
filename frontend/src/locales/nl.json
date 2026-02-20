@@ -71,6 +71,7 @@
         "upload_photos": "Foto's uploaden",
         "uploading": "Uploaden...",
         "logout": "Uitloggen",
+        "captured_items": "AFBEELDINGEN ({{count}})",
         "gps_lock": "GPS AAN",
         "gps_failed": "GPS MISLUKT",
         "optimized_verified": "Geoptimaliseerd & geverifieerd: {{count}} afbeeldingen",

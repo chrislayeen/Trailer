@@ -71,6 +71,7 @@
         "upload_photos": "Upload Photos",
         "uploading": "Uploading...",
         "logout": "Logout",
+        "captured_items": "IMAGES ({{count}})",
         "gps_lock": "GPS ON",
         "gps_failed": "GPS FAILED",
         "optimized_verified": "Optimized & Verified {{count}} images",
