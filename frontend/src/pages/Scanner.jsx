@@ -371,10 +371,10 @@ const Scanner = () => {
                             boxShadow: '0 0 0 4000px rgba(0, 0, 0, 0.5)' // Darkens outside
                         }}>
                             {/* Blue Corners */}
-                            <div style={{ position: 'absolute', top: -2, left: -2, width: 40, height: 40, borderTop: '4px solid #3b82f6', borderLeft: '4px solid #3b82f6', borderTopLeftRadius: '24px' }}></div>
-                            <div style={{ position: 'absolute', top: -2, right: -2, width: 40, height: 40, borderTop: '4px solid #3b82f6', borderRight: '4px solid #3b82f6', borderTopRightRadius: '24px' }}></div>
-                            <div style={{ position: 'absolute', bottom: -2, left: -2, width: 40, height: 40, borderBottom: '4px solid #3b82f6', borderLeft: '4px solid #3b82f6', borderBottomLeftRadius: '24px' }}></div>
-                            <div style={{ position: 'absolute', bottom: -2, right: -2, width: 40, height: 40, borderBottom: '4px solid #3b82f6', borderRight: '4px solid #3b82f6', borderBottomRightRadius: '24px' }}></div>
+                            <div style={{ position: 'absolute', top: -2, left: -2, width: 40, height: 40, borderTop: '4px solid var(--primary)', borderLeft: '4px solid var(--primary)', borderTopLeftRadius: '24px' }}></div>
+                            <div style={{ position: 'absolute', top: -2, right: -2, width: 40, height: 40, borderTop: '4px solid var(--primary)', borderRight: '4px solid var(--primary)', borderTopRightRadius: '24px' }}></div>
+                            <div style={{ position: 'absolute', bottom: -2, left: -2, width: 40, height: 40, borderBottom: '4px solid var(--primary)', borderLeft: '4px solid var(--primary)', borderBottomLeftRadius: '24px' }}></div>
+                            <div style={{ position: 'absolute', bottom: -2, right: -2, width: 40, height: 40, borderBottom: '4px solid var(--primary)', borderRight: '4px solid var(--primary)', borderBottomRightRadius: '24px' }}></div>
 
                             {/* Scanning Bar */}
                             <div style={{
@@ -383,8 +383,8 @@ const Scanner = () => {
                                 left: '5%',
                                 right: '5%',
                                 height: '2px',
-                                background: '#3b82f6',
-                                boxShadow: '0 0 10px #3b82f6',
+                                background: 'var(--primary)',
+                                boxShadow: '0 0 10px var(--primary)',
                                 animation: 'scan 2s infinite ease-in-out'
                             }}></div>
                         </div>
@@ -392,7 +392,7 @@ const Scanner = () => {
                         {/* Hint */}
                         <div style={{ position: 'absolute', top: '70%', left: 0, right: 0, textAlign: 'center', marginTop: '2rem' }}>
                             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(0,0,0,0.6)', padding: '8px 16px', borderRadius: '20px' }}>
-                                <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#3b82f6' }}></div>
+                                <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--primary)' }}></div>
                                 <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>{t('scan.align_qr')}</span>
                             </div>
                         </div>

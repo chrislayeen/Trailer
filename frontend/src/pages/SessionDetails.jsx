@@ -45,7 +45,7 @@ const SessionDetails = () => {
                     <ArrowLeft size={20} />
                 </button>
                 <div>
-                    <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#3b82f6', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '2px' }}>Chassis Record</div>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '2px' }}>Chassis Record</div>
                     <h1 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0, letterSpacing: '-0.5px' }}>#{session.chassis_id}</h1>
                 </div>
             </div>
@@ -57,8 +57,8 @@ const SessionDetails = () => {
                     <div style={{ display: 'grid', gap: '1.5rem' }}>
 
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'rgba(59,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(59,130,246,0.2)' }}>
-                                <User size={20} color="#3b82f6" />
+                            <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'rgba(37,99,235,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(37,99,235,0.2)' }}>
+                                <User size={20} color="#2563eb" />
                             </div>
                             <div>
                                 <label style={{ fontSize: '0.65rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', margin: 0 }}>Operator</label>

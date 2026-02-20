@@ -23,29 +23,50 @@ const PhotoCapture = () => {
     const fileInputRef = useRef(null);
     const galleryInputRef = useRef(null);
 
-    // Geolocation Effect (Auto-fetch)
+    // Geolocation Effect (Optimized Fetching)
     useEffect(() => {
-        if ("geolocation" in navigator) {
-            setIsGpsFetching(true);
-            const watchId = navigator.geolocation.watchPosition(
+        if (!("geolocation" in navigator)) {
+            updateLocationStatus(false, 'manual');
+            setIsGpsFetching(false);
+            return;
+        }
+
+        const fetchPosition = () => {
+            // If we already have a lock, don't show the fetching spinner
+            if (!currentSession?.gps_lat) {
+                setIsGpsFetching(true);
+            }
+
+            navigator.geolocation.getCurrentPosition(
                 (position) => {
                     updateSessionCoords(position.coords.latitude, position.coords.longitude);
                     updateLocationStatus(true, 'gps');
                     setIsGpsFetching(false);
                 },
                 (error) => {
-                    console.error("Error getting location", error);
-                    updateLocationStatus(false, 'manual');
+                    console.error("GPS Error:", error.message);
+                    // Only transition to failed/manual if we truly have no coordinates
+                    if (!currentSession?.gps_lat) {
+                        updateLocationStatus(false, 'manual');
+                    }
                     setIsGpsFetching(false);
                 },
-                { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000, // Increased timeout for stability
+                    maximumAge: 60000 // Allow use of cached location (1 min old)
+                }
             );
-            return () => navigator.geolocation.clearWatch(watchId);
-        } else {
-            updateLocationStatus(false, 'manual');
-            setIsGpsFetching(false);
-        }
-    }, [updateLocationStatus, updateSessionCoords]);
+        };
+
+        // Initial fetch
+        fetchPosition();
+
+        // Background update every 30 seconds instead of continuous watching
+        const intervalId = setInterval(fetchPosition, 30000);
+
+        return () => clearInterval(intervalId);
+    }, [updateLocationStatus, updateSessionCoords, currentSession?.gps_lat]);
 
     const handleNativeCapture = async (e) => {
         const files = Array.from(e.target.files || []);
@@ -175,10 +196,6 @@ const PhotoCapture = () => {
                         <div style={{ width: 'fit-content', height: 'fit-content', border: '1px solid #10b981', color: '#10b981', background: '#eafff2', padding: '6px 12px', borderRadius: '999px', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
                             <MapPin size={14} strokeWidth={2.5} /> {t('session.gps_lock')}
                         </div>
-                    ) : isGpsFetching ? (
-                        <div style={{ width: 'fit-content', height: 'fit-content', border: '1px solid #3b82f6', color: '#2563eb', background: '#eff6ff', padding: '6px 12px', borderRadius: '999px', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <Loader2 size={14} className="animate-spin" /> {t('session.gps_fetching')}
-                        </div>
                     ) : (
                         <div style={{ width: 'fit-content', height: 'fit-content', border: '1px solid #ef4444', color: '#dc2626', background: '#fef2f2', padding: '6px 12px', borderRadius: '999px', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
                             <MapPin size={14} strokeWidth={2.5} /> {t('session.gps_failed')}
@@ -286,7 +303,7 @@ const PhotoCapture = () => {
                         {t('session.upload_file')}
                     </button>
                     <button onClick={triggerNativeCamera} disabled={capturing} style={{
-                        padding: '16px', background: '#2563eb', border: 'none', borderRadius: '16px', color: 'white', fontSize: '15px', fontWeight: 700, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.25)'
+                        padding: '16px', background: 'var(--primary)', border: 'none', borderRadius: '16px', color: 'white', fontSize: '15px', fontWeight: 700, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.25)'
                     }}>
                         <div style={{ background: 'rgba(255,255,255,0.2)', borderRadius: '50%', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <Camera size={20} color="white" strokeWidth={2.5} />
@@ -299,7 +316,7 @@ const PhotoCapture = () => {
                     <button onClick={triggerGallery} disabled={capturing} style={{ flex: 1, padding: '14px', background: 'var(--bg-card)', border: '1px solid var(--border-input)', borderRadius: '16px', color: 'var(--text-main)', fontSize: '15px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer' }}>
                         <Upload size={18} /> {t('session.upload_file')}
                     </button>
-                    <button onClick={triggerNativeCamera} disabled={capturing} style={{ flex: 1, padding: '14px', background: '#2563eb', border: 'none', borderRadius: '16px', color: 'white', fontSize: '15px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)' }}>
+                    <button onClick={triggerNativeCamera} disabled={capturing} style={{ flex: 1, padding: '14px', background: 'var(--primary)', border: 'none', borderRadius: '16px', color: 'white', fontSize: '15px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)' }}>
                         <Camera size={18} /> {t('session.capture')}
                     </button>
                 </div>
@@ -386,7 +403,7 @@ const PhotoCapture = () => {
                         width: '100%',
                         maxWidth: '500px',
                         padding: '18px',
-                        background: '#2563eb',
+                        background: 'var(--primary)',
                         color: 'white',
                         borderRadius: '16px',
                         fontSize: '16px',

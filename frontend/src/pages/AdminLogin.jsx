@@ -33,7 +33,7 @@ const AdminLogin = () => {
         <div className="admin-dark-bg" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '1.5rem', position: 'relative', overflow: 'hidden' }}>
 
             {/* Background elements */}
-            <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(59,130,246,0.15) 0%, rgba(2,6,23,0) 70%)', borderRadius: '50%', filter: 'blur(40px)', zIndex: 0 }} />
+            <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(37,99,235,0.15) 0%, rgba(2,6,23,0) 70%)', borderRadius: '50%', filter: 'blur(40px)', zIndex: 0 }} />
             <div style={{ position: 'absolute', bottom: '-10%', right: '-10%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(16,185,129,0.1) 0%, rgba(2,6,23,0) 70%)', borderRadius: '50%', filter: 'blur(40px)', zIndex: 0 }} />
 
             <motion.div
@@ -43,8 +43,8 @@ const AdminLogin = () => {
                 style={{ width: '100%', maxWidth: '420px', zIndex: 10 }}
             >
                 <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-                    <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '80px', height: '80px', borderRadius: '24px', background: 'linear-gradient(135deg, rgba(59,130,246,0.2), rgba(37,99,235,0.05))', border: '1px solid rgba(59,130,246,0.3)', marginBottom: '1.5rem', boxShadow: '0 0 30px rgba(59,130,246,0.2)' }}>
-                        <ShieldCheck size={40} color="#3b82f6" />
+                    <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '80px', height: '80px', borderRadius: '24px', background: 'linear-gradient(135deg, rgba(37,99,235,0.2), rgba(37,99,235,0.05))', border: '1px solid rgba(37,99,235,0.3)', marginBottom: '1.5rem', boxShadow: '0 0 30px rgba(37,99,235,0.2)' }}>
+                        <ShieldCheck size={40} color="#2563eb" />
                     </div>
                     <h1 style={{ fontSize: '2rem', fontWeight: 800, margin: '0 0 0.5rem 0', letterSpacing: '-0.5px', color: '#f8fafc' }}>System Access</h1>
                     <p style={{ color: '#94a3b8', margin: 0, fontSize: '0.95rem' }}>Enter your credentials to access the command center</p>

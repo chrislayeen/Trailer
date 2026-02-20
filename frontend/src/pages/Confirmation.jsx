@@ -112,7 +112,7 @@ const Confirmation = () => {
                 <div style={{ width: '100%', marginBottom: '2rem', textAlign: 'left' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                         <h3 style={{ fontSize: '1.1rem', fontWeight: 800 }}>{t('confirmation.documentation')} ({session.photos?.length || 0})</h3>
-                        <span style={{ color: '#2563eb', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer' }}>{t('confirmation.read_only')}</span>
+                        <span style={{ color: 'var(--primary)', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer' }}>{t('confirmation.read_only')}</span>
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
                         {(session.photos || []).slice(0, 6).map((photo) => {
@@ -150,7 +150,7 @@ const Confirmation = () => {
                         style={{
                             width: '100%',
                             padding: '1rem',
-                            background: '#2563eb',
+                            background: 'var(--primary)',
                             color: 'white',
                             border: 'none',
                             borderRadius: '12px',

@@ -49,8 +49,8 @@
 
 :root {
   /* Colors */
-  --primary: #1d4ed8;
-  --primary-dark: #1e40af;
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
   --success: #10b981;
   --error: #ef4444;
   --warning: #f59e0b;
@@ -112,32 +112,6 @@
   font-family: 'Satoshi', system-ui, -apple-system, sans-serif;
 }
 
-/* Dark Mode Overrides */
-.dark {
-  --bg-app: linear-gradient(135deg, #020617 0%, #0f172a 100%);
-  --bg-surface: #0f172a;
-  --bg-header: rgba(15, 23, 42, 0.9);
-  --bg-input: #1e293b;
-  --bg-card: #1e293b;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-inverse: #020617;
-  --border-light: rgba(255, 255, 255, 0.08);
-  --border-input: #334155;
-  --shadow-color: rgba(0, 0, 0, 0.3);
-
-  --slate-50: #020617;
-  --slate-100: #0f172a;
-  --slate-200: #1e293b;
-  --slate-300: #334155;
-  --slate-400: #475569;
-  --slate-500: #64748b;
-  --slate-600: #94a3b8;
-  --slate-700: #cbd5e1;
-  --slate-800: #e2e8f0;
-  --slate-900: #f1f5f9;
-  --slate-950: #f8fafc;
-}
 
 * {
   box-sizing: border-box;
@@ -193,5 +167,23 @@ input {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-subtitle {
+    display: none;
+  }
+
+  .driver-pill {
+    padding: 6px 8px !important;
+  }
+
+  .driver-pill span {
+    font-size: 11px !important;
+    max-width: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }

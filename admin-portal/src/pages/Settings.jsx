@@ -313,7 +313,7 @@ const Settings = () => {
                 <aside style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                     <div style={{ background: 'white', padding: '1.5rem', borderRadius: '24px', border: '1px solid #f1f5f9' }}>
                         <h3 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <Shield size={18} color="#3b82f6" /> Admin Profile
+                            <Shield size={18} color="var(--primary)" /> Admin Profile
                         </h3>
                         <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '16px', marginBottom: '1rem' }}>
                             <div style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600, marginBottom: '4px' }}>Logged in as</div>

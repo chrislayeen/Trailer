@@ -60,8 +60,8 @@ const AdminDashboard = () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                     <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                            <Activity size={16} color="#3b82f6" />
-                            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#3b82f6', textTransform: 'uppercase', letterSpacing: '1px' }}>Global Tracker</span>
+                            <Activity size={16} color="#2563eb" />
+                            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>Global Tracker</span>
                         </div>
                         <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: 0, letterSpacing: '-0.5px' }}>Command Center</h1>
                     </div>
@@ -160,7 +160,7 @@ const AdminDashboard = () => {
                                             <div>
                                                 <label style={{ fontSize: '0.65rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Origin Point</label>
                                                 <div style={{ fontSize: '0.85rem', fontWeight: 500, color: '#cbd5e1', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px' }}>
-                                                    <MapPin size={14} color="#3b82f6" /> {session.originLog}
+                                                    <MapPin size={14} color="#2563eb" /> {session.originLog}
                                                 </div>
                                             </div>
                                             <div>

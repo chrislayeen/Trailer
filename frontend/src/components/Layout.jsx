@@ -3,15 +3,13 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSession } from '../context/SessionContext';
 import LanguageSwitcher from './LanguageSwitcher';
-import { useTheme } from '../context/ThemeContext';
-import { LogOut, LayoutDashboard, Sun, Moon } from 'lucide-react';
+import { LogOut, LayoutDashboard } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
 
 const Layout = ({ children }) => {
     const { driverName, isAdmin, logoutDriver } = useSession();
     const { signOut } = useAuth();
-    const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
     const location = useLocation();
     const { t } = useTranslation();
@@ -75,39 +73,21 @@ const Layout = ({ children }) => {
                         )}
 
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <h1 style={{ fontSize: '16px', fontWeight: 800, letterSpacing: '-0.3px', margin: 0, color: 'var(--text-main)' }}>
+                            <h1 style={{ fontSize: 'min(4.5vw, 16px)', fontWeight: 800, letterSpacing: '-0.3px', margin: 0, color: 'var(--text-main)', whiteSpace: 'nowrap' }}>
                                 {t('app.header_title')}
                             </h1>
-                            <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                            <span className="header-subtitle" style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                                 {t('app.field_ops')}
                             </span>
                         </div>
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <button
-                            onClick={toggleTheme}
-                            style={{
-                                background: 'var(--bg-surface)',
-                                border: '1px solid var(--border-input)',
-                                width: '36px',
-                                height: '36px',
-                                borderRadius: '10px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s ease'
-                            }}
-                            title={theme === 'light' ? 'Dark Mode' : 'Light Mode'}
-                        >
-                            {theme === 'light' ? <Moon size={18} color="var(--slate-600)" /> : <Sun size={18} color="var(--warning)" />}
-                        </button>
 
                         <LanguageSwitcher />
 
                         {driverName && !isAdminRoute && (
-                            <div style={{
+                            <div className="driver-pill" style={{
                                 background: 'var(--bg-surface)',
                                 padding: '6px 12px',
                                 borderRadius: '999px',
@@ -116,9 +96,9 @@ const Layout = ({ children }) => {
                                 alignItems: 'center',
                                 gap: '8px'
                             }}>
-                                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--success)' }}></div>
+                                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--success)', flexShrink: 0 }}></div>
                                 <span style={{ fontSize: '13px', color: 'var(--text-main)', fontWeight: 700, letterSpacing: '0.2px' }}>
-                                    {driverName}
+                                    {driverName.split(' ')[0]}
                                 </span>
                             </div>
                         )}
