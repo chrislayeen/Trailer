@@ -71,7 +71,7 @@
         "upload_photos": "Foto's uploaden",
         "uploading": "Uploaden...",
         "logout": "Uitloggen",
-        "gps_lock": "GPS-LOCK",
+        "gps_lock": "GPS AAN",
         "gps_failed": "GPS MISLUKT",
         "optimized_verified": "Geoptimaliseerd & geverifieerd: {{count}} afbeeldingen",
         "processing_error": "Verwerken van sommige foto's is mislukt.",
