@@ -10,10 +10,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const PhotoCapture = () => {
     const navigate = useNavigate();
-    const { currentSession, addPhoto, removePhoto, updateLocationStatus, submitSession, updateSessionCoords, resetSession, logoutDriver } = useSession();
+    const { currentSession, addPhoto, removePhoto, updateLocationStatus, updatePhotoComment, submitSession, updateSessionCoords, resetSession, logoutDriver } = useSession();
     const { t } = useTranslation();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [capturing, setCapturing] = useState(false);
+    const [isGpsFetching, setIsGpsFetching] = useState(true);
     const [photoNotes, setPhotoNotes] = useState({});
 
     const [previewImage, setPreviewImage] = useState(null);
@@ -25,21 +26,26 @@ const PhotoCapture = () => {
     // Geolocation Effect (Auto-fetch)
     useEffect(() => {
         if ("geolocation" in navigator) {
+            setIsGpsFetching(true);
             const watchId = navigator.geolocation.watchPosition(
                 (position) => {
                     updateSessionCoords(position.coords.latitude, position.coords.longitude);
                     updateLocationStatus(true, 'gps');
+                    setIsGpsFetching(false);
                 },
                 (error) => {
                     console.error("Error getting location", error);
                     updateLocationStatus(false, 'manual');
-                }
+                    setIsGpsFetching(false);
+                },
+                { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
             );
             return () => navigator.geolocation.clearWatch(watchId);
         } else {
             updateLocationStatus(false, 'manual');
+            setIsGpsFetching(false);
         }
-    }, [updateLocationStatus]);
+    }, [updateLocationStatus, updateSessionCoords]);
 
     const handleNativeCapture = async (e) => {
         const files = Array.from(e.target.files || []);
@@ -115,6 +121,10 @@ const PhotoCapture = () => {
 
     const handleNoteChange = (id, value) => {
         setPhotoNotes(prev => ({ ...prev, [id]: value }));
+        // Persist to DB immediately for uploaded photos
+        if (typeof id === 'string' && id.length > 20) { // Simple UUID check
+            updatePhotoComment(id, value);
+        }
     };
 
     const handleSubmit = async () => {
@@ -165,8 +175,12 @@ const PhotoCapture = () => {
                         <div style={{ width: 'fit-content', height: 'fit-content', border: '1px solid #10b981', color: '#10b981', background: '#eafff2', padding: '6px 12px', borderRadius: '999px', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
                             <MapPin size={14} strokeWidth={2.5} /> {t('session.gps_lock')}
                         </div>
+                    ) : isGpsFetching ? (
+                        <div style={{ width: 'fit-content', height: 'fit-content', border: '1px solid #3b82f6', color: '#2563eb', background: '#eff6ff', padding: '6px 12px', borderRadius: '999px', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <Loader2 size={14} className="animate-spin" /> {t('session.gps_fetching')}
+                        </div>
                     ) : (
-                        <div style={{ width: 'fit-content', height: 'fit-content', border: '1px solid #f59e0b', color: '#d97706', background: '#fffbeb', padding: '6px 12px', borderRadius: '999px', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <div style={{ width: 'fit-content', height: 'fit-content', border: '1px solid #ef4444', color: '#dc2626', background: '#fef2f2', padding: '6px 12px', borderRadius: '999px', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
                             <MapPin size={14} strokeWidth={2.5} /> {t('session.gps_failed')}
                         </div>
                     )}
@@ -450,7 +464,7 @@ const PhotoCapture = () => {
                             style={{ maxWidth: '100%', maxHeight: '85%', objectFit: 'contain', borderRadius: '16px', boxShadow: '0 20px 60px rgba(0,0,0,0.6)' }}
                             onClick={(e) => e.stopPropagation()}
                         />
-                        {(previewImage.comment || previewImage.chassisId) && (
+                        {(previewImage.comments || previewImage.chassisId || (photoNotes[previewImage.id])) && (
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -474,8 +488,8 @@ const PhotoCapture = () => {
                                     gap: '6px'
                                 }}
                             >
-                                {previewImage.comment && (
-                                    <div style={{ fontSize: '15px' }}>{previewImage.comment}</div>
+                                {(previewImage.comments || photoNotes[previewImage.id]) && (
+                                    <div style={{ fontSize: '15px' }}>{previewImage.comments || photoNotes[previewImage.id]}</div>
                                 )}
                                 <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', color: '#cbd5e1', fontSize: '12px' }}>
                                     {previewImage.chassisId && (

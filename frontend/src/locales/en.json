@@ -64,6 +64,7 @@
         "no_photos_title": "No photos yet",
         "no_photos_desc": "Captured photos and uploaded documents will appear here.",
         "gps_logged": "GPS Logged",
+        "gps_fetching": "GPS FETCHING",
         "no_gps": "No GPS",
         "uploaded": "UPLOADED",
         "pending": "PENDING",

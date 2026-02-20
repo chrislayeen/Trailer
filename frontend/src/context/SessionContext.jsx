@@ -227,6 +227,30 @@ export const SessionProvider = ({ children }) => {
     }
   }, [currentSession]);
 
+  const updatePhotoComment = useCallback(async (photoId, comment) => {
+    if (!currentSession) return;
+
+    try {
+      // Update local state first (Optimistic)
+      setCurrentSession(prev => prev ? ({
+        ...prev,
+        photos: prev.photos.map(p => p.id === photoId ? { ...p, comments: comment } : p),
+        uploadedPhotos: (prev.uploadedPhotos || []).map(p => p.id === photoId ? { ...p, comments: comment } : p)
+      }) : null);
+
+      // Persist to DB
+      const { error } = await supabase
+        .from('photos')
+        .update({ comments: comment })
+        .eq('id', photoId);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error updating photo comment:', error);
+      toast.error('Failed to save comment.');
+    }
+  }, [currentSession]);
+
   const submitSession = useCallback(async (overrideComments = null) => {
     if (!currentSession) return;
 
@@ -322,6 +346,7 @@ export const SessionProvider = ({ children }) => {
     updateSessionCoords,
     addPhoto,
     removePhoto,
+    updatePhotoComment,
     submitSession,
     resetSession,
     loading
@@ -339,6 +364,7 @@ export const SessionProvider = ({ children }) => {
     updateSessionCoords,
     addPhoto,
     removePhoto,
+    updatePhotoComment,
     submitSession,
     resetSession,
     loading

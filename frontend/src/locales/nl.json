@@ -64,6 +64,7 @@
         "no_photos_title": "Nog geen foto's",
         "no_photos_desc": "Gemaakte foto's en geüploade documenten verschijnen hier.",
         "gps_logged": "GPS-gelogd",
+        "gps_fetching": "GPS ZOEKEN...",
         "no_gps": "Geen GPS",
         "uploaded": "GEÜPLOAD",
         "pending": "IN AFWACHTING",
