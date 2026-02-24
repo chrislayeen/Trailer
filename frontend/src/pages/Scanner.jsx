@@ -433,6 +433,9 @@ const Scanner = () => {
                             cursor: 'pointer',
                             backdropFilter: 'blur(10px)'
                         }}
+                    >
+                        {t('scan.enter_manually')}
+                    </button>
                 ) : (
                     <form onSubmit={handleManualSubmit} style={{ width: '100%', maxWidth: '400px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                         <input
