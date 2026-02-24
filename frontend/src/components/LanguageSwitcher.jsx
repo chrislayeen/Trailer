@@ -10,31 +10,32 @@ const LanguageSwitcher = ({ variant = 'light' }) => {
         i18n.changeLanguage(newLang);
     };
 
-    const isLight = variant === 'light';
+    const [isHovered, setIsHovered] = React.useState(false);
 
     return (
         <button
             onClick={toggleLanguage}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
             style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
-                background: isLight ? 'var(--bg-surface)' : 'rgba(255,255,255,0.1)',
-                border: isLight ? '1px solid var(--border-input)' : '1px solid rgba(255,255,255,0.2)',
-                padding: '8px 10px',
-                borderRadius: '999px',
-                color: isLight ? 'var(--text-main)' : 'white',
+                gap: '6px',
+                background: isHovered ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.12)',
+                border: '1px solid rgba(255, 255, 255, 0.25)',
+                padding: '0 12px',
+                height: '36px',
+                borderRadius: '10px',
+                color: '#FFFFFF',
                 fontSize: '0.75rem',
-                fontWeight: 700,
+                fontWeight: 600,
                 cursor: 'pointer',
-                transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                backdropFilter: isLight ? 'none' : 'blur(8px)',
-                boxShadow: isLight ? '0 1px 2px var(--shadow-color)' : 'none',
+                transition: 'all 0.2s ease',
                 fontFamily: 'inherit'
             }}
             title={i18n.language === 'nl' ? "Switch to English" : "Wissel naar Nederlands"}
         >
-            <Globe size={14} />
+            <Globe size={14} color="white" />
             {i18n.language === 'nl' ? 'NL' : 'EN'}
         </button>
     );

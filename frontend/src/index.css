@@ -137,7 +137,6 @@ body {
   flex-direction: column;
   position: relative;
   width: 100%;
-  overflow-x: hidden;
 }
 
 h1,

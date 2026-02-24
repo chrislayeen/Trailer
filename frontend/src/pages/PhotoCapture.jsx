@@ -13,7 +13,7 @@ const PhotoCapture = () => {
     const { currentSession, addPhoto, removePhoto, updateLocationStatus, updatePhotoComment, submitSession, updateSessionCoords, resetSession, logoutDriver } = useSession();
     const { t } = useTranslation();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [capturing, setCapturing] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
     const [isGpsFetching, setIsGpsFetching] = useState(true);
     const [photoNotes, setPhotoNotes] = useState({});
 
@@ -72,7 +72,7 @@ const PhotoCapture = () => {
         const files = Array.from(e.target.files || []);
         if (files.length === 0) return;
 
-        setCapturing(true);
+        setIsProcessing(true);
         let processedCount = 0;
 
         try {
@@ -126,7 +126,7 @@ const PhotoCapture = () => {
             console.error("Image processing error:", err);
             toast.error(t('session.processing_error'));
         } finally {
-            setCapturing(false);
+            setIsProcessing(false);
             if (fileInputRef.current) fileInputRef.current.value = '';
             if (galleryInputRef.current) galleryInputRef.current.value = '';
         }
@@ -188,9 +188,15 @@ const PhotoCapture = () => {
             {/* Header Block Matches Mockup */}
             <div style={{ background: 'var(--bg-card)', padding: '16px 20px', borderRadius: '24px', display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px', boxShadow: '0 4px 16px var(--shadow-color)', border: '1px solid var(--border-light)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div>
-                        <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px', marginBottom: '4px' }}>{t('session.chassis')}</div>
-                        <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-main)' }}>{currentSession.chassis_id}</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px', marginBottom: '2px' }}>{t('session.chassis')}</div>
+                        <div style={{
+                            fontSize: '18px',
+                            fontWeight: 800,
+                            color: 'var(--text-main)',
+                            wordBreak: 'break-all',
+                            lineHeight: '1.2'
+                        }}>{currentSession.chassis_id}</div>
                     </div>
                     {currentSession.location_verified ? (
                         <div style={{ width: 'fit-content', height: 'fit-content', border: '1px solid #10b981', color: '#10b981', background: '#eafff2', padding: '6px 12px', borderRadius: '999px', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -294,30 +300,56 @@ const PhotoCapture = () => {
             {/* Upload / Capture Buttons */}
             {currentSession.photos.length === 0 ? (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '32px' }}>
-                    <button onClick={triggerGallery} disabled={capturing} style={{
-                        padding: '16px', background: 'white', border: '1px solid #e2e8f0', borderRadius: '16px', color: '#334155', fontSize: '15px', fontWeight: 700, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
-                    }}>
-                        <div style={{ background: '#f1f5f9', borderRadius: '50%', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <Upload size={20} color="#475569" strokeWidth={2.5} />
+                    <button
+                        onClick={triggerGallery}
+                        disabled={isProcessing || isSubmitting}
+                        style={{
+                            padding: '16px', background: 'white', border: '1px solid #e2e8f0', borderRadius: '16px', color: '#334155', fontSize: '15px', fontWeight: 700, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: (isProcessing || isSubmitting) ? 'not-allowed' : 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
+                            opacity: (isProcessing || isSubmitting) ? 0.7 : 1,
+                            transition: 'all 0.2s ease'
+                        }}
+                    >
+                        <div style={{ background: '#f1f5f9', borderRadius: '50%', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                            {isProcessing ? (
+                                <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
+                                    <Loader2 size={20} color="#475569" strokeWidth={2.5} />
+                                </motion.div>
+                            ) : (
+                                <Upload size={20} color="#475569" strokeWidth={2.5} />
+                            )}
                         </div>
-                        {t('session.upload_file')}
+                        {isProcessing ? 'Processing...' : t('session.upload_file')}
                     </button>
-                    <button onClick={triggerNativeCamera} disabled={capturing} style={{
-                        padding: '16px', background: 'var(--primary)', border: 'none', borderRadius: '16px', color: 'white', fontSize: '15px', fontWeight: 700, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.25)'
-                    }}>
+                    <button
+                        onClick={triggerNativeCamera}
+                        disabled={isProcessing || isSubmitting}
+                        style={{
+                            padding: '16px', background: 'var(--primary)', border: 'none', borderRadius: '16px', color: 'white', fontSize: '15px', fontWeight: 700, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: (isProcessing || isSubmitting) ? 'not-allowed' : 'pointer', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.25)',
+                            opacity: (isProcessing || isSubmitting) ? 0.7 : 1,
+                            transition: 'all 0.2s ease'
+                        }}
+                    >
                         <div style={{ background: 'rgba(255,255,255,0.2)', borderRadius: '50%', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <Camera size={20} color="white" strokeWidth={2.5} />
+                            {isProcessing ? (
+                                <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
+                                    <Loader2 size={20} color="white" strokeWidth={2.5} />
+                                </motion.div>
+                            ) : (
+                                <Camera size={20} color="white" strokeWidth={2.5} />
+                            )}
                         </div>
-                        {t('session.capture')}
+                        {isProcessing ? 'Processing...' : t('session.capture')}
                     </button>
                 </div>
             ) : (
                 <div style={{ display: 'flex', gap: '12px', marginBottom: '32px' }}>
-                    <button onClick={triggerGallery} disabled={capturing} style={{ flex: 1, padding: '14px', background: 'var(--bg-card)', border: '1px solid var(--border-input)', borderRadius: '16px', color: 'var(--text-main)', fontSize: '15px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer' }}>
-                        <Upload size={18} /> {t('session.upload_file')}
+                    <button onClick={triggerGallery} disabled={isProcessing || isSubmitting} style={{ flex: 1, padding: '14px', background: 'var(--bg-card)', border: '1px solid var(--border-input)', borderRadius: '16px', color: 'var(--text-main)', fontSize: '15px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: (isProcessing || isSubmitting) ? 'not-allowed' : 'pointer', opacity: (isProcessing || isSubmitting) ? 0.7 : 1 }}>
+                        {isProcessing ? <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}><Loader2 size={18} /></motion.div> : <Upload size={18} />}
+                        {isProcessing ? 'Wait...' : t('session.upload_file')}
                     </button>
-                    <button onClick={triggerNativeCamera} disabled={capturing} style={{ flex: 1, padding: '14px', background: 'var(--primary)', border: 'none', borderRadius: '16px', color: 'white', fontSize: '15px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)' }}>
-                        <Camera size={18} /> {t('session.capture')}
+                    <button onClick={triggerNativeCamera} disabled={isProcessing || isSubmitting} style={{ flex: 1, padding: '14px', background: 'var(--primary)', border: 'none', borderRadius: '16px', color: 'white', fontSize: '15px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: (isProcessing || isSubmitting) ? 'not-allowed' : 'pointer', boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)', opacity: (isProcessing || isSubmitting) ? 0.7 : 1 }}>
+                        {isProcessing ? <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}><Loader2 size={18} /></motion.div> : <Camera size={18} />}
+                        {isProcessing ? 'Wait...' : t('session.capture')}
                     </button>
                 </div>
             )}
@@ -342,6 +374,48 @@ const PhotoCapture = () => {
             )}
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '40px' }}>
+                {/* Processing Skeleton Loader */}
+                <AnimatePresence>
+                    {isProcessing && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            style={{
+                                background: 'white',
+                                borderRadius: '16px',
+                                padding: '16px',
+                                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                                display: 'flex',
+                                gap: '16px',
+                                border: '1px solid #f1f5f9',
+                                position: 'relative',
+                                overflow: 'hidden'
+                            }}
+                        >
+                            <div style={{ width: '80px', height: '80px', borderRadius: '12px', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}>
+                                    <Loader2 size={24} color="#cbd5e1" />
+                                </motion.div>
+                            </div>
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10px' }}>
+                                <div style={{ height: '12px', width: '60%', background: '#f1f5f9', borderRadius: '4px' }}></div>
+                                <div style={{ height: '10px', width: '40%', background: '#f1f5f9', borderRadius: '4px' }}></div>
+                                <div style={{ height: '10px', width: '50%', background: '#f8fafc', borderRadius: '4px' }}></div>
+                            </div>
+                            {/* Shimmer Effect */}
+                            <motion.div
+                                animate={{ x: ['-100%', '100%'] }}
+                                transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+                                style={{
+                                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)',
+                                    zIndex: 1
+                                }}
+                            />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
                 {currentSession.photos.map(photo => (
                     <div key={photo.id} style={{ background: 'white', borderRadius: '16px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <div style={{ display: 'flex', gap: '16px' }}>
@@ -395,31 +469,58 @@ const PhotoCapture = () => {
 
             {/* Bottom Floating Submit Action */}
             <div style={{ position: 'fixed', bottom: '24px', left: 0, right: 0, padding: '0 24px', zIndex: 50, display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center', pointerEvents: 'none' }}>
-                <button
-                    onClick={handleSubmit}
-                    disabled={isSubmitting || currentSession.photos.length === 0}
-                    style={{
-                        pointerEvents: 'auto',
-                        width: '100%',
-                        maxWidth: '500px',
-                        padding: '18px',
-                        background: 'var(--primary)',
-                        color: 'white',
-                        borderRadius: '16px',
-                        fontSize: '16px',
-                        fontWeight: 700,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '10px',
-                        border: 'none',
-                        boxShadow: '0 4px 12px rgba(37, 99, 235, 0.25)',
-                        opacity: (isSubmitting || currentSession.photos.length === 0) ? 0.5 : 1,
-                        cursor: (isSubmitting || currentSession.photos.length === 0) ? 'not-allowed' : 'pointer'
-                    }}
-                >
-                    <CloudUpload size={22} strokeWidth={2.5} /> {isSubmitting ? t('session.uploading') : t('session.upload_photos')}
-                </button>
+                <AnimatePresence>
+                    {currentSession.photos.length > 0 && (
+                        <motion.button
+                            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                            transition={{ type: "spring", damping: 25, stiffness: 400 }}
+                            onClick={handleSubmit}
+                            disabled={isSubmitting}
+                            style={{
+                                pointerEvents: 'auto',
+                                width: '100%',
+                                maxWidth: '500px',
+                                padding: '18px',
+                                background: 'var(--primary)',
+                                color: 'white',
+                                borderRadius: '16px',
+                                fontSize: '16px',
+                                fontWeight: 700,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '10px',
+                                border: 'none',
+                                boxShadow: '0 8px 20px rgba(37, 99, 235, 0.25)',
+                                cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                                transition: 'all 0.2s ease',
+                                transform: isSubmitting ? 'scale(0.98)' : 'scale(1)',
+                                position: 'relative',
+                                overflow: 'hidden'
+                            }}
+                        >
+                            {isSubmitting ? (
+                                <>
+                                    <motion.div
+                                        animate={{ rotate: 360 }}
+                                        transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                    >
+                                        <Loader2 size={22} strokeWidth={2.5} />
+                                    </motion.div>
+                                    <span>{t('session.uploading')}</span>
+                                </>
+                            ) : (
+                                <>
+                                    <CloudUpload size={22} strokeWidth={2.5} />
+                                    <span>{t('session.upload_photos')} ({currentSession.photos.length})</span>
+                                </>
+                            )}
+                        </motion.button>
+                    )}
+                </AnimatePresence>
 
                 <button
                     onClick={handleCompleteSession}
