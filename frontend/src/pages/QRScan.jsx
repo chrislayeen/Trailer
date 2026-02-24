@@ -4,7 +4,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import { useSession } from '../context/SessionContext';
 import { Button } from '../components/UI';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import { QrCode, ScanLine, HelpCircle, Bot } from 'lucide-react';
+import { QrCode, ScanLine, HelpCircle } from 'lucide-react';
 
 const QRScan = () => {
     const navigate = useNavigate();
@@ -26,12 +26,8 @@ const QRScan = () => {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', paddingBottom: '2rem', position: 'relative' }}>
             {/* Branding */}
-            <div style={{ textAlign: 'center', marginBottom: '2rem', marginTop: '1rem', position: 'relative', width: '100%', maxWidth: '320px' }}>
-                <div style={{ display: 'inline-flex', padding: '12px', background: 'var(--bg-card)', borderRadius: '12px', color: 'var(--primary)', marginBottom: '1rem', marginTop: '2rem', border: '1px solid var(--border-light)' }}>
-                    <Bot size={32} />
-                </div>
-                <h3 style={{ color: 'var(--primary)', fontSize: '0.8rem', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.5rem' }}>{t('app.logistics_corp')}</h3>
-                <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-main)' }}>{t('app.title')}</h1>
+            <div style={{ textAlign: 'center', marginBottom: '2rem', marginTop: '2rem', position: 'relative', width: '100%', maxWidth: '320px' }}>
+                <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-main)', letterSpacing: '-0.02em' }}>{t('app.title')}</h1>
             </div>
 
             {/* Scan Frame */}

@@ -504,11 +504,6 @@ const Scanner = () => {
                     </form>
                 )}
 
-                <div style={{ marginTop: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', opacity: 0.5 }}>
-                    <div style={{ height: '1px', width: '40px', background: 'white' }}></div>
-                    <span style={{ fontSize: '0.7rem', letterSpacing: '2px', fontWeight: 700 }}>{t('app.logistics_corp')}</span>
-                    <div style={{ height: '1px', width: '40px', background: 'white' }}></div>
-                </div>
             </div>
 
             <style>{`
