@@ -268,13 +268,13 @@ const Scanner = () => {
         <div style={{
             position: 'relative',
             inset: 0,
-            background: 'linear-gradient(180deg, #1f2937 0%, #0f172a 100%)', // Dark Slate/Gray gradient
+            background: '#111827', // Enterprise Charcoal
             color: 'white',
             display: 'flex',
             flexDirection: 'column',
             zIndex: 50,
             minHeight: 'calc(100vh - 64px)',
-            overflow: showManualInput ? 'auto' : 'hidden', // Allow scroll when keyboard is likely open
+            overflow: showManualInput ? 'auto' : 'hidden',
             WebkitOverflowScrolling: 'touch'
         }}>
             {/* Unified Layout Header takes care of the top bar */}
@@ -308,93 +308,62 @@ const Scanner = () => {
             )}
 
             {/* Camera View Area */}
+            {/* Main Scanner Section */}
             <div
                 className="scanner-viewport-area"
                 style={{
                     flex: '1 1 auto',
                     position: 'relative',
                     display: 'flex',
+                    flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    background: 'black',
                     width: '100%',
+                    maxWidth: '700px',
+                    margin: '0 auto',
                     overflow: 'hidden',
-                    maxHeight: 'calc(100vh - 200px)' // Ensure footer is always visible or pulling up
+                    padding: '2rem'
                 }}
             >
+                {/* Camera Viewport Module */}
+                <div style={{
+                    width: '100%',
+                    maxWidth: '500px',
+                    position: 'relative',
+                    aspectRatio: '1/1',
+                    background: '#000',
+                    borderRadius: '24px',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden',
+                    marginBottom: '2rem',
+                    boxShadow: '0 20px 50px rgba(0,0,0,0.5)'
+                }}>
+                    {/* ID for html5-qrcode */}
+                    <div id="reader" style={{ width: '100%', height: '100%' }}></div>
 
-                {/* ID for html5-qrcode */}
-                <div id="reader" style={{ width: '100%', maxWidth: '500px', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '12px' }}></div>
+                    {!isScanning && !error && (
+                        <div style={{ position: 'absolute', zIndex: 10, textAlign: 'center' }}>
+                            <p style={{ color: '#9ca3af', fontSize: '0.9rem', marginBottom: '0.5rem' }}>{t('scan.ready_to_scan', 'Ready to Scan')}</p>
+                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--primary)', margin: '0 auto', animation: 'pulse 2s infinite' }}></div>
+                        </div>
+                    )}
 
-                {!isScanning && !error && (
-                    <div style={{ position: 'absolute', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                        <button
-                            onClick={startScanner}
-                            style={{
-                                padding: '1rem 2rem',
-                                background: 'var(--primary)',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '999px',
-                                fontWeight: 600,
-                                fontSize: '1.2rem',
-                                boxShadow: '0 4px 12px rgba(37, 99, 235, 0.4)',
-                                cursor: 'pointer'
-                            }}
-                        >
-                            {t('scan.start_scan')}
-                        </button>
-                        <p style={{ color: '#9ca3af', fontSize: '0.9rem' }}>{t('scan.camera_inactive')}</p>
-                    </div>
-                )}
+                    {error && (
+                        <div style={{ position: 'absolute', zIndex: 10, textAlign: 'center', padding: '1rem' }}>
+                            <p style={{ color: '#ef4444', fontWeight: 600 }}>{error}</p>
+                        </div>
+                    )}
 
-                {error && (
-                    <div style={{ position: 'absolute', zIndex: 10, textAlign: 'center', padding: '2rem' }}>
-                        <p style={{ color: '#ef4444', fontWeight: 600, marginBottom: '1rem' }}>{error}</p>
-                        <button
-                            onClick={startScanner}
-                            style={{
-                                padding: '0.75rem 1.5rem',
-                                background: 'rgba(255,255,255,0.1)',
-                                color: 'white',
-                                border: '1px solid rgba(255,255,255,0.2)',
-                                borderRadius: '8px',
-                                cursor: 'pointer'
-                            }}
-                        >
-                            {t('scan.retry')}
-                        </button>
-                    </div>
-                )}
-
-
-                {/* Scan Overlay (Only visible when scanning) */}
-                {isScanning && (
-                    <div style={{
-                        position: 'absolute',
-                        inset: 0,
-                        pointerEvents: 'none',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}>
-                        {/* Scan Frame */}
+                    {/* Scan Overlay (Only visible when scanning) */}
+                    {isScanning && (
                         <div style={{
-                            width: '250px',
-                            height: '250px',
-                            aspectRatio: '1/1',
-                            border: '1px solid rgba(255,255,255,0.2)',
-                            borderRadius: '24px',
-                            position: 'relative',
-                            boxShadow: '0 0 0 4000px rgba(0, 0, 0, 0.5)' // Darkens outside
+                            position: 'absolute',
+                            inset: 0,
+                            pointerEvents: 'none',
                         }}>
-                            {/* Blue Corners */}
-                            <div style={{ position: 'absolute', top: -2, left: -2, width: 40, height: 40, borderTop: '4px solid var(--primary)', borderLeft: '4px solid var(--primary)', borderTopLeftRadius: '24px' }}></div>
-                            <div style={{ position: 'absolute', top: -2, right: -2, width: 40, height: 40, borderTop: '4px solid var(--primary)', borderRight: '4px solid var(--primary)', borderTopRightRadius: '24px' }}></div>
-                            <div style={{ position: 'absolute', bottom: -2, left: -2, width: 40, height: 40, borderBottom: '4px solid var(--primary)', borderLeft: '4px solid var(--primary)', borderBottomLeftRadius: '24px' }}></div>
-                            <div style={{ position: 'absolute', bottom: -2, right: -2, width: 40, height: 40, borderBottom: '4px solid var(--primary)', borderRight: '4px solid var(--primary)', borderBottomRightRadius: '24px' }}></div>
-
-                            {/* Scanning Bar */}
                             <div style={{
                                 position: 'absolute',
                                 top: '10%',
@@ -406,117 +375,152 @@ const Scanner = () => {
                                 animation: 'scan 2s infinite ease-in-out'
                             }}></div>
                         </div>
+                    )}
+                </div>
 
-                        {/* Hint */}
-                        <div style={{ position: 'absolute', top: '70%', left: 0, right: 0, textAlign: 'center', marginTop: '2rem' }}>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(0,0,0,0.6)', padding: '8px 16px', borderRadius: '20px' }}>
-                                <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--primary)' }}></div>
-                                <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>{t('scan.align_qr')}</span>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            {/* Footer Actions */}
-            <div
-                className="scanner-footer-actions"
-                style={{
-                    padding: '2rem',
-                    paddingBottom: showManualInput ? '12rem' : '3.5rem', // Extra space for keyboard
-                    zIndex: 20,
-                    background: '#0f172a',
-                    transition: 'padding-bottom 0.3s',
-                    flexShrink: 0
-                }}
-            >
-                {!showManualInput ? (
-                    <button
-                        onClick={handleManualEntry}
-                        style={{
-                            width: '100%',
-                            maxWidth: '400px',
-                            margin: '0 auto',
-                            padding: '1rem',
-                            background: 'rgba(255,255,255,0.1)',
-                            border: '1px solid rgba(255,255,255,0.2)',
-                            borderRadius: '16px',
-                            color: 'white',
-                            fontWeight: 600,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '10px',
-                            cursor: 'pointer',
-                            backdropFilter: 'blur(10px)'
-                        }}
-                    >
-                        {t('scan.enter_manually')}
-                    </button>
-                ) : (
-                    <form onSubmit={handleManualSubmit} style={{ width: '100%', maxWidth: '400px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        <input
-                            ref={inputRef}
-                            type="text"
-                            value={manualId}
-                            onChange={(e) => setManualId(e.target.value)}
-                            placeholder={t('scan.manual_placeholder')}
-                            onFocus={(e) => {
-                                // Standard mobile behavior: wait for keyboard, then scroll
-                                setTimeout(() => {
-                                    e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                }, 300);
-                            }}
-                            style={{
-                                width: '100%',
-                                padding: '1rem',
-                                borderRadius: '12px',
-                                border: 'none',
-                                background: 'rgba(255,255,255,0.9)',
-                                color: 'black',
-                                fontSize: '1rem',
-                                outline: 'none'
-                            }}
-                        />
-                        <div style={{ display: 'flex', gap: '10px' }}>
+                {/* Controls Area */}
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '12px',
+                    width: '100%',
+                    maxWidth: '400px',
+                    zIndex: 20
+                }}>
+                    {!isScanning ? (
+                        <>
                             <button
-                                type="button"
-                                onClick={() => setShowManualInput(false)}
+                                onClick={startScanner}
                                 style={{
-                                    flex: 1,
-                                    padding: '1rem',
-                                    background: 'rgba(255,255,255,0.1)',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '12px',
-                                    fontWeight: 600,
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                {t('scan.cancel')}
-                            </button>
-                            <button
-                                type="submit"
-                                style={{
-                                    flex: 1,
-                                    padding: '1rem',
+                                    width: '100%',
+                                    padding: '1.25rem',
                                     background: 'var(--primary)',
                                     color: 'white',
                                     border: 'none',
-                                    borderRadius: '12px',
-                                    fontWeight: 600,
-                                    cursor: 'pointer'
+                                    borderRadius: '16px',
+                                    fontWeight: 700,
+                                    fontSize: '1.1rem',
+                                    boxShadow: '0 4px 15px rgba(37, 99, 235, 0.4)',
+                                    cursor: 'pointer',
+                                    transition: 'transform 0.2s, background 0.2s'
                                 }}
+                                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
                             >
-                                {t('scan.submit')}
+                                {t('scan.start_scan')}
                             </button>
-                        </div>
-                    </form>
-                )}
 
+                            {!showManualInput && (
+                                <button
+                                    onClick={handleManualEntry}
+                                    style={{
+                                        width: '100%',
+                                        padding: '1rem',
+                                        background: 'transparent',
+                                        border: '1px solid rgba(255,255,255,0.2)',
+                                        borderRadius: '16px',
+                                        color: 'rgba(255,255,255,0.8)',
+                                        fontWeight: 600,
+                                        fontSize: '0.95rem',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s',
+                                        backdropFilter: 'blur(10px)'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                                        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.background = 'transparent';
+                                        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
+                                    }}
+                                >
+                                    {t('scan.enter_manually')}
+                                </button>
+                            )}
+                        </>
+                    ) : (
+                        <button
+                            onClick={stopScanner}
+                            style={{
+                                width: '100%',
+                                padding: '1rem',
+                                background: 'rgba(239, 68, 68, 0.1)',
+                                color: '#ef4444',
+                                border: '1px solid rgba(239, 68, 68, 0.2)',
+                                borderRadius: '16px',
+                                fontWeight: 600,
+                                cursor: 'pointer'
+                            }}
+                        >
+                            Cancel Scan
+                        </button>
+                    )}
+
+                    {showManualInput && (
+                        <form onSubmit={handleManualSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '1rem' }}>
+                            <input
+                                ref={inputRef}
+                                type="text"
+                                value={manualId}
+                                onChange={(e) => setManualId(e.target.value)}
+                                placeholder={t('scan.manual_placeholder')}
+                                style={{
+                                    width: '100%',
+                                    padding: '1.25rem',
+                                    borderRadius: '16px',
+                                    border: '1px solid rgba(255,255,255,0.2)',
+                                    background: 'rgba(0,0,0,0.3)',
+                                    color: 'white',
+                                    fontSize: '1rem',
+                                    outline: 'none'
+                                }}
+                            />
+                            <div style={{ display: 'flex', gap: '12px' }}>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowManualInput(false)}
+                                    style={{
+                                        flex: 1,
+                                        padding: '1rem',
+                                        background: 'rgba(255,255,255,0.1)',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '16px',
+                                        fontWeight: 600,
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    {t('scan.cancel')}
+                                </button>
+                                <button
+                                    type="submit"
+                                    style={{
+                                        flex: 1,
+                                        padding: '1rem',
+                                        background: 'var(--primary)',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '16px',
+                                        fontWeight: 600,
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    {t('scan.submit')}
+                                </button>
+                            </div>
+                        </form>
+                    )}
+                </div>
             </div>
 
+
             <style>{`
+            @keyframes pulse {
+                0% { transform: scale(0.95); opacity: 0.5; }
+                50% { transform: scale(1.05); opacity: 1; }
+                100% { transform: scale(0.95); opacity: 0.5; }
+            }
             @keyframes scan {
                 0% { top: 10%; opacity: 0; }
                 10% { opacity: 1; }
@@ -531,26 +535,19 @@ const Scanner = () => {
                 object-fit: cover !important;
                 width: 100% !important;
                 height: 100% !important;
-                border-radius: 12px !important;
+                border-radius: 24px !important;
             }
             @media (max-width: 767px) {
                 .scanner-viewport-area {
-                    max-height: 42vh !important;
-                    min-height: 280px !important;
-                }
-                .scanner-footer-actions {
-                    padding-top: 0.75rem !important;
-                    padding-bottom: 2rem !important;
+                    padding: 1.5rem !important;
+                    justify-content: flex-start !important;
+                    gap: 1.5rem !important;
                 }
             }
             @media (min-width: 768px) {
                 .scanner-viewport-area {
-                    max-height: 60vh !important;
-                    margin: 2rem 0;
-                }
-                .scanner-footer-actions {
-                    padding-top: 1rem !important;
-                    padding-bottom: 3rem !important;
+                    justify-content: center !important;
+                    gap: 2rem !important;
                 }
             }
         `}</style>
