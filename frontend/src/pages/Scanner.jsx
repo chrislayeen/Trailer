@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Flashlight, AlignJustify } from 'lucide-react';
+import { X, Flashlight } from 'lucide-react';
 import { toast } from 'sonner';
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import { useTranslation } from 'react-i18next';
@@ -273,46 +273,39 @@ const Scanner = () => {
             display: 'flex',
             flexDirection: 'column',
             zIndex: 50,
-            minHeight: '100vh',
+            minHeight: 'calc(100vh - 64px)',
             overflow: showManualInput ? 'auto' : 'hidden', // Allow scroll when keyboard is likely open
             WebkitOverflowScrolling: 'touch'
         }}>
-            {/* Header */}
-            <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '1rem',
-                background: 'linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%)',
-                zIndex: 20
-            }}>
-                <button onClick={handleClose} style={{
-                    background: 'rgba(255,255,255,0.1)',
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    borderRadius: '50%',
-                    width: '44px',
-                    height: '44px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    cursor: 'pointer',
-                    backdropFilter: 'blur(10px)',
-                    transition: 'all 0.2s'
+            {/* Unified Layout Header takes care of the top bar */}
+            {hasTorch && (
+                <div style={{
+                    position: 'absolute',
+                    top: '1rem',
+                    right: '1rem',
+                    zIndex: 100
                 }}>
-                    <X size={24} />
-                </button>
-                <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#60a5fa', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase' }}>{t('scan.scanner_title')}</div>
-                    <div style={{ fontSize: '1rem', fontWeight: 600 }}>{t('scan.active_session')}</div>
-                </div>
-                {hasTorch && (
-                    <button onClick={toggleTorch} style={{ background: torchEnabled ? 'rgba(255, 255, 255, 1)' : 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: torchEnabled ? 'black' : 'white', cursor: 'pointer', transition: 'all 0.2s' }}>
+                    <button
+                        onClick={toggleTorch}
+                        style={{
+                            background: torchEnabled ? 'rgba(255, 255, 255, 1)' : 'rgba(255,255,255,0.2)',
+                            border: 'none',
+                            borderRadius: '50%',
+                            width: '44px',
+                            height: '44px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: torchEnabled ? 'black' : 'white',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                            backdropFilter: 'blur(10px)'
+                        }}
+                    >
                         <Flashlight size={20} />
                     </button>
-                )}
-                {!hasTorch && <div style={{ width: 40 }}></div>} {/* Spacer */}
-            </div>
+                </div>
+            )}
 
             {/* Camera View Area */}
             <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'black', width: '100%', overflow: 'hidden' }}>
@@ -440,9 +433,6 @@ const Scanner = () => {
                             cursor: 'pointer',
                             backdropFilter: 'blur(10px)'
                         }}
-                    >
-                        <AlignJustify size={20} /> {t('scan.enter_manually')}
-                    </button>
                 ) : (
                     <form onSubmit={handleManualSubmit} style={{ width: '100%', maxWidth: '400px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                         <input
