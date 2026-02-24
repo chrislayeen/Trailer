@@ -533,6 +533,16 @@ const Scanner = () => {
                 height: 100% !important;
                 border-radius: 12px !important;
             }
+            @media (max-width: 767px) {
+                .scanner-viewport-area {
+                    max-height: 42vh !important;
+                    min-height: 280px !important;
+                }
+                .scanner-footer-actions {
+                    padding-top: 0.75rem !important;
+                    padding-bottom: 2rem !important;
+                }
+            }
             @media (min-width: 768px) {
                 .scanner-viewport-area {
                     max-height: 60vh !important;
