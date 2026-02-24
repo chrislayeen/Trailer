@@ -308,7 +308,20 @@ const Scanner = () => {
             )}
 
             {/* Camera View Area */}
-            <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'black', width: '100%', overflow: 'hidden' }}>
+            <div
+                className="scanner-viewport-area"
+                style={{
+                    flex: '1 1 auto',
+                    position: 'relative',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: 'black',
+                    width: '100%',
+                    overflow: 'hidden',
+                    maxHeight: 'calc(100vh - 200px)' // Ensure footer is always visible or pulling up
+                }}
+            >
 
                 {/* ID for html5-qrcode */}
                 <div id="reader" style={{ width: '100%', maxWidth: '500px', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '12px' }}></div>
@@ -406,13 +419,17 @@ const Scanner = () => {
             </div>
 
             {/* Footer Actions */}
-            <div style={{
-                padding: '2rem',
-                paddingBottom: showManualInput ? '12rem' : '3.5rem', // Extra space for keyboard
-                zIndex: 20,
-                background: '#0f172a',
-                transition: 'padding-bottom 0.3s'
-            }}>
+            <div
+                className="scanner-footer-actions"
+                style={{
+                    padding: '2rem',
+                    paddingBottom: showManualInput ? '12rem' : '3.5rem', // Extra space for keyboard
+                    zIndex: 20,
+                    background: '#0f172a',
+                    transition: 'padding-bottom 0.3s',
+                    flexShrink: 0
+                }}
+            >
                 {!showManualInput ? (
                     <button
                         onClick={handleManualEntry}
@@ -515,6 +532,16 @@ const Scanner = () => {
                 width: 100% !important;
                 height: 100% !important;
                 border-radius: 12px !important;
+            }
+            @media (min-width: 768px) {
+                .scanner-viewport-area {
+                    max-height: 60vh !important;
+                    margin: 2rem 0;
+                }
+                .scanner-footer-actions {
+                    padding-top: 1rem !important;
+                    padding-bottom: 3rem !important;
+                }
             }
         `}</style>
         </div>
